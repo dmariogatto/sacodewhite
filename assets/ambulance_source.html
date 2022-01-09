@@ -1,0 +1,1848 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ambulance Dashboard</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+    <link href="./Content/kendo/2020R1/kendo.common.min.css" rel="stylesheet" />
+
+    <link href="./Content/kendo/2020R1/kendo.silver.min.css" rel="stylesheet" />
+    <link href="./Content/kendo/2020R1/kendo.silver.mobile.min.css" rel="stylesheet" />
+    <link href="./Content/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="./scripts/jquery-1.11.1.js"></script>
+    <script src="./scripts/Kendo/2020R1/kendo.all.min.js"></script>
+    <script src="./scripts/bootstrap.min.js"></script>
+
+    <!--Dashboard Alerts-->
+    <link href="css/DashboardAlert.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="scripts/DashboardAlertsExt.js"></script>
+
+    <script>
+        var msie = document.documentMode;
+
+        if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
+            document.write('<script src="https://cdn.polyfill.io/v2/polyfill.js?features=fetch"><\/script>');
+        }
+
+        $(function () {
+            GetDashboardAlert("MHS");
+        });
+    </script>
+
+    <style type="text/css">
+
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .header {
+            /*width: 970px;*/
+            text-align: left;
+            margin: 0 auto;
+            padding: 5px;
+        }
+
+        .wrapper {
+            /*width: 960px;*/
+            text-align: left;
+            margin: 0 auto;
+            background-color: cadetblue;
+            padding: 5px;
+        }
+
+        .k-button {
+            height: 25px;
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-size: 12px
+        }
+
+        .dashboardHeader {
+            background-color: #006666;
+            height: 30px;
+            /*margin-left:10px ;
+            margin-right:10px ;*/
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .dashboardHeaderLabel {
+            color: white;
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            font-size: 18px
+        }
+
+        .lblStatusSmall {
+            color: black;
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-weight: normal;
+            font-size: 12px;
+            color: white;
+        }
+
+        .k-grid-header, .k-header {
+            background-color: #006666; /*#2EB3A6 ;*/
+        }
+
+            .k-grid-header, .k-header, .k-grid-header .k-header .k-link {
+                color: white !important;
+            }
+
+                .k-grid-header .k-header .k-link:hover {
+                    background-color: transparent !important;
+                }
+
+        .k-state-active {
+            background-color: transparent;
+        }
+
+        .k-grid {
+            font-size: 10px;
+            /*height: 100%;*/
+        }
+
+            .k-grid td {
+                line-height: 1em;
+            }
+
+            .k-grid tbody tr {
+                height: 24px
+            }
+
+        .k-grid {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+        }
+
+        .Headerlabel {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .Headerlabel2 {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .k-content {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+        }
+
+
+        .footer {
+            position: fixed;
+            left: 0px;
+            bottom: 0px;
+            height: 40px;
+            width: 100%;
+            display: none
+        }
+
+        /*@media only screen and (max-width: 1000px) {
+            .footer {
+               display:block
+            }
+
+            .leftPanel  {
+                display: table-header-group;
+                width: 100%;
+
+            }
+
+            .leftPanel2,.rightPanel, .rightPanel2,.Headerlabel  {
+                display: none;
+                width: 100%;
+            }
+
+
+            .k-grid {
+            font-size: 20px;
+            height: 100%;
+
+        }
+        }*/
+
+        /*.k-grid th {
+            background: linear-gradient(#1C85C9,  #469CD3);
+            filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1C85C9', endColorstr='#469CD3');
+
+        }*/
+    </style>
+
+    <script>
+        if (!Array.prototype.indexOf) {
+            Array.prototype.indexOf = function (searchElement, fromIndex) {
+
+                var k;
+
+                // 1. Let o be the result of calling ToObject passing
+                //    the this value as the argument.
+                if (this == null) {
+                    throw new TypeError('"this" is null or not defined');
+                }
+
+                var o = Object(this);
+
+                // 2. Let lenValue be the result of calling the Get
+                //    internal method of o with the argument "length".
+                // 3. Let len be ToUint32(lenValue).
+                var len = o.length >>> 0;
+
+                // 4. If len is 0, return -1.
+                if (len === 0) {
+                    return -1;
+                }
+
+                // 5. If argument fromIndex was passed let n be
+                //    ToInteger(fromIndex); else let n be 0.
+                var n = fromIndex | 0;
+
+                // 6. If n >= len, return -1.
+                if (n >= len) {
+                    return -1;
+                }
+
+                // 7. If n >= 0, then Let k be n.
+                // 8. Else, n<0, Let k be len - abs(n).
+                //    If k is less than 0, then let k be 0.
+                k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+                // 9. Repeat, while k < len
+                while (k < len) {
+                    // a. Let Pk be ToString(k).
+                    //   This is implicit for LHS operands of the in operator
+                    // b. Let kPresent be the result of calling the
+                    //    HasProperty internal method of o with argument Pk.
+                    //   This step can be combined with c
+                    // c. If kPresent is true, then
+                    //    i.  Let elementK be the result of calling the Get
+                    //        internal method of o with the argument ToString(k).
+                    //   ii.  Let same be the result of applying the
+                    //        Strict Equality Comparison Algorithm to
+                    //        searchElement and elementK.
+                    //  iii.  If same is true, return k.
+                    if (k in o && o[k] === searchElement) {
+                        return k;
+                    }
+                    k++;
+                }
+                return -1;
+            };
+        }
+    </script>
+</head>
+<body>
+
+
+    <div id="wrapper" class="wrapper">
+        <div class="alert-container col-lg-3  col-md-5 col-md-offset-4 col-sm-8 col-sm-offset-2 col-12"> </div>
+
+
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-12" style="padding:0px">
+                    <div class="dashboardHeader">
+                        <label class="dashboardHeaderLabel pull-left" style="margin-left:5px;">Ambulance Service Dashboard</label>&nbsp;
+                        <a href="#" class="pull-left" style="margin-left:10px;" onclick="window.open('http://www.sahealth.sa.gov.au/wps/wcm/connect/public+content/sa+health+internet/about+us/our+performance/our+hospital+dashboards/about+the+ambulance+service+dashboard', '_blank')">
+                            <img src="Content/Help_White.png" style="height:15px;margin-bottom:5px" />
+                        </a>
+                        <div class="alert-exclamation pull-left" title="Click here to open the messages" style="display:none;margin-left:10px" onclick="OpenAlert()">
+                            <i class="fa fa-exclamation-triangle fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5" style="padding:0px">
+                    <label id="lblStatus" class="Headerlabel">Emergency Department</label>
+                    <br /><label class="lblStatusSmall">Last Refreshed: </label><label class="lblStatusSmall" id="CurrentDate"></label>
+
+                    <div style="width: 100%; display: table; ">
+                        <div style="display: table-row">
+                            <div id="grid" class="k-grid" style="display: table-cell;padding-top:0px;vertical-align:top;"> </div>
+                            <div id="grid2" class="k-grid" style="display: table-cell;padding-top:0px;vertical-align:top"> </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3">
+                    <div style="height:30px"></div>
+                    <label id="lblHosp1" class="Headerlabel2"></label>
+                    <div id="grid3" class="k-grid" style="width:100%"></div>
+                </div>
+                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-4">
+                    <div style="height:28px"></div>
+                    <label id="lblHosp2" class="Headerlabel"></label>
+                    <div id="chart" style="height:250px"></div>
+                </div>
+            </div>
+
+
+
+
+
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                    <label id="lblStatus" class="Headerlabel">Inpatient Bed Status</label>
+                    <br /><label class="lblStatusSmall">Last Refreshed: </label><label class="lblStatusSmall" id="CurrentDateIP"></label>
+                    <div style="height:7px"></div>
+                    <div id="grid4" class="k-grid" style="width:100%"></div>
+                </div>
+                <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                    <label id="lblStatusCAP" class="Headerlabel">Available Specialty Beds</label>
+                    <br /><label class="lblStatusSmall">Last Refreshed: </label><label class="lblStatusSmall" id="CurrentDateCAP"></label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="textButton" class="k-button">Capacity & Occupancy</button>
+                    <div id="grid5" class="k-grid" style="width:100%; display:block"></div>
+                    <div id="grid6" class="k-grid" style="width:100%; display:none"></div>
+                    <label id="lblscreenwidth1" class="lblStatusSmall" style="display:none">Note: This table may be scrolled based on your screen size</label>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+
+
+        <script>
+            $(document).ready(function () {
+
+                $("#textButton").kendoButton({
+                    click: onClick
+                });
+
+                var v_beds_type = 'Available Beds';
+                function onClick(e) {
+                    //kendoConsole.log("event :: click (" + $(e.event.target).closest(".k-button").attr("id") + ")");
+                    if (e.sender.element[0].innerText == 'Capacity & Occupancy') {
+                        e.sender.element[0].innerText = 'Available Beds';
+                        document.getElementById('grid5').style.display = "none";
+                        document.getElementById('grid6').style.display = "block";
+                        document.getElementById('lblStatusCAP').innerHTML = "Capacity & Occupancy";
+                        var grid = $("#grid6").data("kendoGrid");
+
+                        grid.resize(true);
+                        var grid = $("#grid6").data("kendoGrid");
+                        for (var i = 0; i < grid.columns.length; i++) {
+                            grid.autoFitColumn(i);
+                        }
+
+                        v_beds_type = 'Capacity & Occupancy';
+
+                        ResizeControls();
+                    }
+                    else {
+                        e.sender.element[0].innerText = 'Capacity & Occupancy';
+                        document.getElementById('grid5').style.display = "block";
+                        document.getElementById('grid6').style.display = "none";
+                        document.getElementById('lblscreenwidth1').style.display = "none";
+                        document.getElementById('lblStatusCAP').innerHTML = "Available Specialty Beds";
+
+                        v_beds_type = 'Available Beds';
+                    }
+                }
+
+                ResizeControls();
+
+                function ResizeControls() {
+                    if (screen.width < 900 && v_beds_type == 'Capacity & Occupancy') {
+                        document.getElementById('lblscreenwidth1').style.display = "block";
+                    }
+                    else {
+                        document.getElementById('lblscreenwidth1').style.display = "none";
+                    }
+
+                    try {
+
+                        var grid = $("#grid").data("kendoGrid");
+
+                        var grid = $("#grid6").data("kendoGrid");
+                        for (var i = 0; i < grid.columns.length; i++) {
+                            grid.autoFitColumn(i);
+                        }
+
+                        grid.resize(true);
+
+                    } catch (err) {
+
+                    }
+
+
+                }
+
+                window.onresize = ResizeControls;
+            });
+        </script>
+
+
+
+
+
+
+
+        <script>
+
+
+            $(document).ready(createStatusGrid());
+            $(document).ready(RefreshComponents());           
+
+
+
+            var currentRowIndex = 0;
+            function createStatusGrid() {
+
+                try {
+
+                    $("#grid").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/MHS001.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "notequal", value: "" },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            ALERT: { type: "number" },
+                                            CAP: { type: "number" },
+                                            TOT: { type: "number" },
+                                            WTBS: { type: "number" },
+                                            BT: { type: "number" },
+                                            RESUS: { type: "number" }
+                                        }
+                                    }
+                                },
+                                sort: { field: "HOSP_SHORT", dir: "asc" }
+                            },
+                            //height: 250,
+                            resizable: true,
+                            groupable: false,
+                            scrollable: false,
+                            sortable: false,
+                            selectable: "row",
+                            columns:
+                                [
+
+
+                                    {
+                                        title: " ",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center;height:28px"
+                                        },
+                                        columns: [
+                                            {
+                                                //field: "HOSP_LONG",
+                                                title: "*",
+                                                width: 20,
+                                                minScreenWidth: 400,
+                                                template: "<img src=" + "# if (data.ALERT==0) { # "
+                                                    + "'./Content/Exclamation.png'" +
+                                                    " # } else { # " +
+                                                    "'./Content/Blank.png'" + " # } #" +
+                                                    "</img>"
+                                            }, {
+                                                field: "HOSP_SHORT",
+                                                title: "Hos",
+                                                width: 40
+                                            },
+                                            {
+                                                //field: "HOSP_LONG",
+                                                title: "*",
+                                                width: 20,
+                                                template: "<img src=" + "# if ((data.TOT/data.CAP)<=0.8) { # "
+                                                    + "'./Content/Green.png'" +
+                                                    " # } else if ((data.TOT/data.CAP)<=0.95) { # " +
+                                                    "'./Content/Amber.png'" +
+                                                    " # } else if ((data.TOT/data.CAP)<=1.25) { # " +
+                                                    "'./Content/Red.png'" +
+                                                    " # } else { # " +
+                                                    "'./Content/White.png'" + " # } #" +
+                                                    "</img>"
+                                            },
+                                            {
+                                                field: "CAP",
+                                                title: "Cap",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                width: 20
+                                            },
+                                            {
+                                                field: "TOT",
+                                                title: "Total",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                template: "<b>" + "#=data.TOT#" + "</b>",
+                                                width: 35
+                                            },
+                                            {
+                                                field: "EA",
+                                                title: "EA",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                width: 20,
+                                                //minScreenWidth: 400,
+                                            },
+                                            {
+                                                field: "WTBS",
+                                                title: "WTBS",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                width: 40
+                                            },
+                                            {
+                                                field: "BT",
+                                                title: "BT",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                width: 20
+                                            },
+                                            {
+                                                field: "RESUS",
+                                                title: "Resus",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                width: 30
+                                            }
+
+
+
+                                        ]
+                                    }
+                                ],
+                            dataBound: function (e) {
+                                var grid = $("#grid").data("kendoGrid");
+                                if (currentRowIndex == 0) {
+                                    //grid.content.find(".k-scrollbar-vertical").scrollTop(0);
+                                    //setTimeout(function () {
+                                    grid.select(e.sender.tbody.find("tr:first-child"));
+                                    var HospCell = e.sender.tbody.find("td:eq(1)");
+                                    createDetailGrid(HospCell[0].outerText);
+                                    createChart(HospCell[0].outerText);
+                                    document.getElementById('lblHosp1').innerHTML = HospCell[0].outerText + ' Triage Category';
+                                    document.getElementById('lblHosp2').innerHTML = HospCell[0].outerText + ' Last 24 Hour Activity';
+                                    //}, 50)
+                                    document.getElementById('CurrentDate').innerHTML = e.sender._data[0].DTM1;
+
+                                }
+                                else {
+                                    grid.select(e.sender.tbody.find("tr:eq(" + currentRowIndex + ")"));
+                                }
+                            },
+                            change: function (e) {
+                                var data = this.dataItem(this.select());
+                                try {
+
+                                    updateSearchFilters("kendoGrid", '#grid2', "HOSP_SHORT", "notequal", "", 1);
+                                    updateSearchFilters("kendoGrid", '#grid2', "HOSP_SHORT", "notequal", "RGH", 0);
+                                    $('#grid2').data("kendoGrid").dataSource.read();
+                                    updateSearchFilters("kendoGrid", '#grid3', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    updateSearchFilters("kendoGrid", '#grid3', "CAT", "notequal", -99, 0);
+                                    $('#grid3').data("kendoGrid").dataSource.read();
+                                    updateSearchFilters("kendoGrid", '#grid4', "HOSP_SHORT", "notequal", "", 1);
+                                    $('#grid4').data("kendoGrid").dataSource.read();
+                                    updateSearchFilters("kendoGrid", '#grid5', "HOSP_SHORT", "notequal", "", 1);
+                                    $('#grid5').data("kendoGrid").dataSource.read();
+                                    updateSearchFilters("kendoGrid", '#grid6', "HOSP_SHORT", "notequal", "", 1);
+                                    $('#grid6').data("kendoGrid").dataSource.read();
+
+                                    updateSearchFilters("kendoChart", '#chart', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#chart').data("kendoChart").dataSource.read();
+
+                                    document.getElementById('lblHosp1').innerHTML = data.HOSP_SHORT + ' Triage Category';
+                                    document.getElementById('lblHosp2').innerHTML = data.HOSP_SHORT + ' Last 24 Hour Activity';
+
+                                    document.getElementById('CurrentDate').innerHTML = e.sender._data[0].DTM1;
+
+                                    currentSelection = this.select();
+                                    selectedRows = [];
+                                    currentSelection.each(function () {
+                                        currentRowIndex = $(this).closest("tr").index();
+                                        if (selectedRows.indexOf(currentRowIndex) == -1) {
+                                            selectedRows.push(currentRowIndex);
+                                        }
+
+                                    })
+                                    console.log(selectedRows);
+
+                                } catch (err) {
+                                    //console.log(err);
+                                }
+
+                            }
+
+                        });
+
+                    $("#grid").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+
+                            switch (e.target.data().field) {
+                                case "HOSP_SHORT":
+                                    text += "Abbreviation for hospital name";
+                                    break;
+                                case "ALERT":
+                                    text += "Current ED status calculated as patients waiting to be seen + treated against capacity";
+                                    break;
+                                case "CAP":
+                                    text += "Total capacity of ED including EECU";
+                                    break;
+                                case "TOT":
+                                    text += "Total number of patients in ED waiting to be seen and being treated";
+                                    break;
+                                case "EA":
+                                    text += "Total number of expected ambulance arrivals";
+                                    break;
+                                case "WTBS":
+                                    text += "Total number of patients waiting to be seen within the ED";
+                                    break;
+                                case "BT":
+                                    text += "Total number of patients currently in the ED whose treatment has commenced";
+                                    break;
+                                case "RESUS":
+                                    text += "Total number of patients in the ED currently in a designated resuscitation treatment area";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+                } catch (err) { };
+
+
+            }
+
+
+
+            var currentRowIndexDetail = 0;
+            function createDetailGrid(Hosp) {
+
+                try {
+                    $("#grid2").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/MHS005.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: {
+                                    logic: "and",
+                                    filters: [{ field: "HOSP_SHORT", operator: "notequal", value: "" },
+                                    { field: "HOSP_SHORT", operator: "notequal", value: "RGH" }]
+                                },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            CLR: { type: "number" },
+                                            ACT: { type: "number" },
+                                            Plus30Min: { type: "number" }
+                                        }
+                                    }
+                                },
+                                sort: { field: "HOSP_SHORT", dir: "asc" }
+                            },
+                            height: 216,
+                            resizable: true,
+                            groupable: false,
+                            selectable: "row",
+                            sortable: false,
+                            scrollable: false,
+                            columns:
+                                [
+
+
+                                    {
+                                        title: "Ambulance <br/> Last 3Hr",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center;height:28px"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "CLR",
+                                                title: "Clr",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                //aggregates: ["sum"],
+                                                //footerTemplate: "#=sum#",
+                                                minScreenWidth: 400,
+                                                width: 20
+                                            }, {
+                                                field: "ACT",
+                                                title: "ACT",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                //aggregates: ["sum"],
+                                                //footerTemplate: "#=sum#",
+                                                width: 20
+                                            }, {
+                                                field: "Plus30Min",
+                                                title: ">30 Min",
+                                                headerAttributes: {
+                                                    style: "white-space: normal"
+                                                },
+                                                //aggregates: ["sum"],
+                                                //footerTemplate: "#=sum#",
+
+                                                width: 65
+                                            }
+
+
+                                        ]
+                                    }],
+                            dataBound: function (e) {
+                                var grid = $("#grid2").data("kendoGrid");
+                                if (currentRowIndex == 0) {
+                                    grid.select(e.sender.tbody.find("tr:first"));
+                                }
+                                else {
+                                    grid.select(e.sender.tbody.find("tr:eq(" + currentRowIndex + ")"));
+                                }
+                            },
+                            //change: function (e) {
+                            //    var grid = $("#grid2").data("kendoGrid");
+                            //    if (currentRowIndex == 0) {
+                            //        grid.select(e.sender.tbody.find("tr:first"));
+                            //    }
+                            //    else {
+                            //        grid.select(e.sender.tbody.find("tr:eq(" + currentRowIndex + ")"));
+                            //    }
+                            //}
+
+
+                        });
+
+                    $("#grid2").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "CLR":
+                                    text += "Number of ambulances cleared from the hospital in the last 3 hours";
+                                    break;
+                                case "ACT":
+                                    text += "Average clearance time (in minutes) for ambulances that cleared the hospital in the last 3 hours";
+                                    break;
+                                case "Plus30Min":
+                                    text += "Cleared ambulances last 3 hours with clearance time >= 30 mins + ambulances currently at hospital >= 30 mins";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+                try {
+                    $("#grid3").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/MHS002.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: {
+                                    logic: "and",
+                                    filters: [{ field: "HOSP_SHORT", operator: "equal", value: Hosp },
+                                    { field: "CAT", operator: "notequal", value: -99 }]
+                                },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            HOSP_CAT: { type: "string" },
+                                            CAT: { type: "string" },
+                                            WTBS: { type: "number" },
+                                            BT: { type: "number" }
+                                        }
+                                    }
+                                },
+                                sort: { field: "CAT", dir: "asc" }
+                            },
+                            height: 143,
+                            resizable: true,
+                            groupable: false,
+
+                            sortable: false,
+                            scrollable: false,
+                            columns:
+                                [
+                                    {
+                                        field: "CAT",
+                                        title: "Cat.",
+                                        headerAttributes: {
+                                            style: "white-space: normal; "
+                                        },
+                                        template: "<b>" + "#=data.CAT#" + "</b>",
+                                        width: 30
+                                    },
+                                    {
+                                        field: "WTBS",
+                                        title: "WTBS",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        width: 30
+                                    },
+                                    {
+                                        field: "BT",
+                                        title: "BT",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        width: 30
+                                    }
+
+                                ]
+
+
+                        });
+
+                    $("#grid3").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "CAT":
+                                    text += "Triage category number (1-5)";
+                                    break;
+                                case "WTBS":
+                                    text += "Number of patients per triage category that are currently waiting to be seen";
+                                    break;
+                                case "BT":
+                                    text += "Number of patients per triage category that are currently being treated";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+                try {
+
+                    $("#grid4").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/MHS003.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "notequal", value: "" },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            WFB: { type: "number" },
+                                            OCC: { type: "number" },
+                                            BASE: { type: "number" }
+                                        }
+                                    }
+                                }
+                            },
+                            height: 240,
+                            resizable: true,
+                            groupable: false,
+
+                            sortable: false,
+                            scrollable: false,
+                            columns:
+                                [
+                                    {
+                                        field: "HOSP_SHORT",
+                                        title: "Hos",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        width: 30
+                                    },
+                                    {
+                                        field: "WFB",
+                                        title: "WFB",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        width: 30
+                                    },
+                                    {
+                                        field: "OCC",
+                                        title: "Occ",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        template: "<b>" + "#=data.OCC#" + "</b>",
+                                        width: 30
+                                    },
+                                    {
+                                        field: "BASE",
+                                        title: "Base",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        width: 30
+                                    }
+
+                                ],
+                            dataBound: function (e) {
+                                document.getElementById('CurrentDateIP').innerHTML = e.sender._data[0].DTM1;
+                            }
+
+
+                        });
+
+                    $("#grid4").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "HOSP_SHORT":
+                                    text += "Abbreviation for hospital name";
+                                    break;
+                                case "WFB":
+                                    text += "Number of patients in ED waiting for a general bed within the hospital";
+                                    break;
+                                case "OCC":
+                                    text += "Total number of overnight patients located on a ward flagged as a general ward";
+                                    break;
+                                case "BASE":
+                                    text += "Total number of base overnight beds on general wards for the hospital";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+                try {
+
+                    $("#grid5").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/MHS004.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "notequal", value: "" },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            DTM: { type: "date" },
+                                            HOSP_SHORT: { type: "string" },
+                                            BURN_CAP: { type: "number" },
+                                            BURN_OCC: { type: "number" },
+                                            CCU_CAP: { type: "number" },
+                                            CCU_OCC: { type: "number" },
+                                            ICU_CAP: { type: "number" },
+                                            ICU_OCC: { type: "number" },
+                                            MH_CAP: { type: "number" },
+                                            MH_OCC: { type: "number" },
+                                            NEO_CAP: { type: "number" },
+                                            NEO_OCC: { type: "number" },
+                                            OBST_CAP: { type: "number" },
+                                            OBST_OCC: { type: "number" },
+                                            PAED_CAP: { type: "number" },
+                                            PAED_OCC: { type: "number" }
+                                        }
+
+                                    }
+                                }
+                            },
+                            height: 240,
+                            resizable: true,
+                            groupable: false,
+
+                            sortable: false,
+                            scrollable: false,
+                            columns:
+                                [
+                                    {
+                                        field: "HOSP_SHORT",
+                                        title: "Hos",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        width: 30
+                                    },
+                                    {
+                                        title: "BURN",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        attributes: {
+                                            style: "# if (data.HOSP_SHORT=='RAH') { # "
+                                                + "" +
+                                                " # } else { # " + "background-color: gainsboro" + " # } #"
+                                        },
+                                        template: "# if (data.HOSP_SHORT=='RAH') { # "
+                                            + "#=data.BURN_CAP-BURN_OCC#" +
+                                            " # } else { # " + "" + " # } #",
+                                        width: 30
+                                    },
+                                    {
+                                        title: "CCU",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        attributes: {
+                                            style: "# if (['FMC','LMH','RAH','TQEH'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                + "" +
+                                                " # } else { # " +
+                                                "background-color: gainsboro" + " # } #"
+                                        },
+                                        template: "# if (['FMC','LMH','RAH','TQEH'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                            + "#=data.CCU_CAP-CCU_OCC#" +
+                                            " # } else { # " +
+                                            "" + " # } #",
+                                        width: 30
+                                    },
+                                    {
+                                        title: "ICU",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        attributes: {
+                                            style: "# if (['FMC','LMH','RAH','TQEH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                + "" +
+                                                " # } else { # " +
+                                                "background-color: gainsboro" + " # } #",
+                                        },
+                                        template: "# if (['FMC','LMH','RAH','TQEH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                            + "#=data.ICU_CAP-ICU_OCC#" +
+                                            " # } else { # " +
+                                            "" + " # } #",
+                                        width: 30
+                                    },
+                                    {
+                                        title: "MH",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        template: "#=data.MH_CAP-MH_OCC#",
+                                        width: 30
+                                    },
+                                    {
+                                        title: "NEO",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        attributes: {
+                                            style: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                + "" +
+                                                " # } else { # " +
+                                                "background-color: gainsboro" + " # } #"
+                                        },
+                                        template: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                            + "#=data.NEO_CAP-NEO_OCC#" +
+                                            " # } else { # " +
+                                            "" + " # } #",
+                                        width: 30
+                                    },
+                                    {
+                                        title: "OBST",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        attributes: {
+                                            style: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                + "" +
+                                                " # } else { # " +
+                                                "background-color: gainsboro" + " # } #"
+                                        },
+                                        template: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                            + "#=data.OBST_CAP-OBST_OCC#" +
+                                            " # } else { # " +
+                                            "" + " # } #",
+                                        width: 30
+                                    },
+                                    {
+                                        title: "PAED",
+                                        headerAttributes: {
+                                            style: "white-space: normal"
+                                        },
+                                        attributes: {
+                                            style: "# if (['FMC','LMH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                + "" +
+                                                " # } else { # " +
+                                                "background-color: gainsboro" + " # } #",
+                                        },
+                                        template: "# if (['FMC','LMH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                            + "#=data.PAED_CAP-PAED_OCC#" +
+                                            " # } else { # " +
+                                            "" + " # } #",
+                                        width: 30
+                                    }
+                                ],
+                            dataBound: function (e) {
+                                document.getElementById('CurrentDateCAP').innerHTML = e.sender._data[0].DTM1;
+                            }
+
+
+                        });
+
+                    $("#grid5").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.text()) {
+                                case "Hos":
+                                    text += "Abbreviation for hospital name";
+                                    break;
+                                case "BURN":
+                                    text += "Current available designated Burns beds for the hospital";
+                                    break;
+                                case "CCU":
+                                    text += "Current available designated Coronary Care beds for the hospital";
+                                    break;
+                                case "ICU":
+                                    text += "Current available designated Intensive Care beds for the hospital";
+                                    break;
+                                case "MH":
+                                    text += "Current available designated Mental Health beds for the hospital";
+                                    break;
+                                case "NEO":
+                                    text += "Current available designated Neonatal beds for the hospital";
+                                    break;
+                                case "OBST":
+                                    text += "Current available designated Obstetric beds for the hospital";
+                                    break;
+                                case "PAED":
+                                    text += "Current available designated Paediatric beds for the hospital";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+                try {
+                    $("#grid6").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/MHS004.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "notequal", value: "" },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            DTM: { type: "date" },
+                                            HOSP_SHORT: { type: "string" },
+                                            BURN_CAP: { type: "number" },
+                                            BURN_OCC: { type: "number" },
+                                            CCU_CAP: { type: "number" },
+                                            CCU_OCC: { type: "number" },
+                                            ICU_CAP: { type: "number" },
+                                            ICU_OCC: { type: "number" },
+                                            MH_CAP: { type: "number" },
+                                            MH_OCC: { type: "number" },
+                                            NEO_CAP: { type: "number" },
+                                            NEO_OCC: { type: "number" },
+                                            OBST_CAP: { type: "number" },
+                                            OBST_OCC: { type: "number" },
+                                            PAED_CAP: { type: "number" },
+                                            PAED_OCC: { type: "number" }
+                                        }
+
+                                    }
+                                }
+                            },
+                            height: 262,
+                            resizable: true,
+                            groupable: false,
+
+                            sortable: true,
+                            scrollable: true,
+                            dataBound: function (e) {
+                                //var grid = $("#grid6").data("kendoGrid");
+                                //for (var i = 0; i < grid.columns.length; i++) {
+                                //grid.autoFitColumn(i);
+                                //}
+
+                            },
+                            columns:
+                                [
+                                    {
+                                        title: " ",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center;"
+                                        },
+                                        columns: [
+                                            {
+
+
+
+                                                field: "HOSP_SHORT",
+                                                title: "Hos",
+                                                width: 50,
+
+                                            }
+                                        ],
+                                        locked: true,
+                                        width: 50
+                                    },
+
+                                    {
+                                        title: "BURN",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "BURN_CAP",
+                                                title: "Cap",
+                                                width: 40,
+                                                attributes: {
+                                                    style: "# if (data.HOSP_SHORT=='RAH') { # "
+                                                        + "" +
+                                                        " # } else { # " + "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (data.HOSP_SHORT=='RAH') { # "
+                                                    + "#=data.BURN_CAP-BURN_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #"
+
+                                            }, {
+                                                field: "BURN_OCC",
+                                                title: "Occ",
+                                                width: 40,
+                                                attributes: {
+                                                    style: "# if (data.HOSP_SHORT=='RAH') { # "
+                                                        + "" +
+                                                        " # } else { # " + "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (data.HOSP_SHORT=='RAH') { # "
+                                                    + "#=data.BURN_CAP-BURN_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "CCU",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "CCU_CAP",
+                                                title: "Cap",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','RAH','TQEH'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (['FMC','LMH','RAH','TQEH'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.CCU_CAP-CCU_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }, {
+                                                field: "CCU_OCC",
+                                                title: "Occ",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','RAH','TQEH'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (['FMC','LMH','RAH','TQEH'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.CCU_CAP-CCU_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "ICU",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "ICU_CAP",
+                                                title: "Cap",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','RAH','TQEH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #",
+                                                },
+                                                template: "# if (['FMC','LMH','RAH','TQEH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.ICU_CAP-ICU_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }, {
+                                                field: "ICU_OCC",
+                                                title: "Occ",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','RAH','TQEH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #",
+                                                },
+                                                template: "# if (['FMC','LMH','RAH','TQEH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.ICU_CAP-ICU_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "MH",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "MH_CAP",
+                                                title: "Cap",
+                                                width: 40
+                                            }, {
+                                                field: "MH_OCC",
+                                                title: "Occ",
+                                                width: 40
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "NEO",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "NEO_CAP",
+                                                title: "Cap",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.NEO_CAP-NEO_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }, {
+                                                field: "NEO_OCC",
+                                                title: "Occ",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.NEO_CAP-NEO_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "OBST",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "OBST_CAP",
+                                                title: "Cap",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.OBST_CAP-OBST_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }, {
+                                                field: "OBST_OCC",
+                                                title: "Occ",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #"
+                                                },
+                                                template: "# if (['FMC','LMH','WCHW'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.OBST_CAP-OBST_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "PAED",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "PAED_CAP",
+                                                title: "Cap",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #",
+                                                },
+                                                template: "# if (['FMC','LMH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.PAED_CAP-PAED_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }, {
+                                                field: "PAED_OCC",
+                                                title: "Occ",
+                                                attributes: {
+                                                    style: "# if (['FMC','LMH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                        + "" +
+                                                        " # } else { # " +
+                                                        "background-color: gainsboro" + " # } #",
+                                                },
+                                                template: "# if (['FMC','LMH','WCHP'].indexOf(data.HOSP_SHORT) >= 0 ) { # "
+                                                    + "#=data.PAED_CAP-PAED_OCC#" +
+                                                    " # } else { # " +
+                                                    "" + " # } #",
+                                                width: 40
+                                            }
+                                        ]
+                                    }
+
+
+
+
+                                ]
+
+
+                        });
+
+                    $("#grid6").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.text()) {
+                                case "Hos":
+                                    text += "Abbreviation for hospital name";
+                                    break;
+                                case "BURN":
+                                    text += "Capacity & current occupancy for designated Burns beds for the hospital";
+                                    break;
+                                case "CCU":
+                                    text += "Capacity & current occupancy for designated Coronary Care beds for the hospital";
+                                    break;
+                                case "ICU":
+                                    text += "Capacity & current occupancy for designated Intensive Care beds for the hospital";
+                                    break;
+                                case "MH":
+                                    text += "Capacity & current occupancy for designated Mental Health beds for the hospital";
+                                    break;
+                                case "NEO":
+                                    text += "Capacity & current occupancy for designated Neonatal beds for the hospital";
+                                    break;
+                                case "OBST":
+                                    text += "Capacity & current occupancy for designated Obstetric beds for the hospital";
+                                    break;
+                                case "PAED":
+                                    text += "Capacity & current occupancy for designated Paediatric beds for the hospital";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+            }
+
+
+            function createChart(Hospital) {
+
+                try {
+                    $("#chart").kendoChart({
+                        theme: "Silver",
+                        plotArea: {
+                            background: "white"
+                        },
+                        chartArea: {
+                            background: "white",
+                            border: {
+                                width: 1,
+                                color: "#EAEAEA"
+                            }
+
+                        },
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "./json/MHS006.json",
+                                    dataType: "json",
+                                    type: 'GET',
+                                    cache: false
+                                }
+                            },
+                            filter: { field: "HOSP_SHORT", operator: "equal", value: Hospital },
+                            schema: {
+                                model: {
+                                    fields: {
+                                        HOSP_SHORT: { type: "string" },
+                                        DTM: { type: "date" },
+                                        ARRIVALS: { type: "number" },
+                                        TOTAL: { type: "number" },
+                                        CAPACITY: { type: "number" },
+                                        WTBS: { type: "number" },
+                                        COM_TREAT: { type: "number" },
+                                        DEPARTURES: { type: "number" },
+                                        T1: { type: "number" },
+                                        T2: { type: "number" },
+                                        T3: { type: "number" },
+                                        T4: { type: "number" }
+                                    }
+                                }
+                            }
+                        },
+                        legend: {
+                            visible: true,
+                            position: "top",
+                        },
+                        seriesDefaults: {
+                            type: "line",
+                            bar: {
+                                opacity: .8
+                            },
+                            gap: 0.7
+                        },
+                        series:
+                            [, {
+                                field: "ARRIVALS",
+                                name: "Arrivals",
+                                type: "area",
+                                categoryField: "DTM",
+                                color: "#404040",
+                                opacity: .9
+
+                            }, {
+                                    field: "COM_TREAT",
+                                    name: "Com Treat",
+                                    categoryField: "DTM",
+                                    stack: true,
+                                    type: "column",
+                                    color: "#FFFFFF",
+                                    opacity: .9
+
+
+                                }
+                                , {
+                                    field: "WTBS",
+                                    name: "WTBS",
+                                    type: "column",
+                                    stack: true,
+                                    categoryField: "DTM",
+                                    color: "#DCDCDC",
+                                    opacity: 1
+
+                                }
+
+                                , {
+                                    field: "DEPARTURES",
+                                    name: "Departures",
+                                    type: "line",
+                                    categoryField: "DTM",
+                                    markers: {
+                                        visible: false
+                                    }
+
+                                }
+
+                                , {
+                                    field: "CAPACITY",
+                                    name: "Capacity",
+                                    type: "line",
+                                    categoryField: "DTM",
+                                    markers: {
+                                        visible: false
+                                    }
+
+                                }
+                            ]
+                        ,
+
+                        valueAxis: {
+                            labels: {
+                                format: "N0"
+                            },
+                            majorGridLines: {
+                                visible: false
+                            },
+                            min: 0,
+                            //max: 30,
+                            line: {
+                                visible: false
+                            },
+                            plotBands: [{
+                                from: 0,
+                                to: 0,
+                                color: "#92D050",
+                                opacity: .9
+                            }, {
+                                from: 0,
+                                to: 0,
+                                color: "#FFC000",
+                                opacity: .9
+                            }, {
+                                from: 0,
+                                to: 0,
+                                color: "#C00000",
+                                opacity: .9
+                            }, {
+                                from: 0,
+                                to: 0,
+                                color: "#FFFFFF",
+                                opacity: 0.9
+                            }],
+                        },
+                        categoryAxis: {
+                            baseUnit: "auto",
+                            justified: false,
+                            type: "date",
+                            majorGridLines: {
+                                visible: false
+                            },
+                            crosshair: {
+                                visible: true
+                            },
+                            labels: {
+                                rotation: "auto",
+                                dateFormats:
+                                {
+                                    minutes: "HH:mm",
+                                    hours: "HH:mm",
+                                    days: "dd/MM",
+                                    months: "MMM 'yy",
+                                    years: "yyyy"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            visible: true,
+                            format: "{0:N0}"
+                        },
+                        transitions: false,
+                        dataBound: function (e) {
+                            var chart = $("#chart").data("kendoChart");
+                            // chart.options.series[0].color = chart.options.series[0].data[0].Color;
+                            var data = chart.options.series[4].data;
+                            chart.options.valueAxis.plotBands[0].to = data[0].CAPACITY * data[0].T1;
+                            chart.options.valueAxis.plotBands[1].from = data[0].CAPACITY * data[0].T1;
+                            chart.options.valueAxis.plotBands[1].to = data[0].CAPACITY * data[0].T2;
+                            chart.options.valueAxis.plotBands[2].from = data[0].CAPACITY * data[0].T2;
+                            chart.options.valueAxis.plotBands[2].to = data[0].CAPACITY * data[0].T3;
+                            chart.options.valueAxis.plotBands[3].from = data[0].CAPACITY * data[0].T3;
+                            chart.options.valueAxis.plotBands[3].to = data[0].CAPACITY * data[0].T4;
+                        }
+                    });
+                } catch (err) { };
+
+            }
+
+            function updateSearchFilters(objtype, obj, field, operator, value, resetfilter) {
+                var newFilter = { field: field, operator: operator, value: value };
+                var dataSource = $(obj).data(objtype).dataSource;
+                var filters = null;
+
+                if (resetfilter == 1) {
+                    filters = [newFilter];
+                }
+                else {
+                    filters = dataSource.filter().filters;
+                    filters.push(newFilter);
+                }
+
+                dataSource.filter(filters);
+
+            }
+
+            
+
+            var iFlush = 0;
+            var CurrentDTM = null;
+            var firstRun = 1;
+            function RefreshComponents() {
+                setInterval(function () {
+                    if (firstRun == 1) {
+                        firstRun = 0;
+                    }
+                    else {
+
+                        $.ajax({
+                            url: './json/MHS001.json',
+                            type: 'GET',
+                            dataType: 'json',
+                            cache: false,
+                            success: function (data) {
+                                try {
+                                    if (CurrentDTM != data[0].DTM1 && CurrentDTM != null) {
+
+                                        iFlush += 1;
+                                        if (iFlush >= 10) {
+                                            if (msie < 9) {
+                                                self.location.reload();
+                                            }
+                                            //else {
+                                            //    kendo.destroy(document.body);
+                                            //}
+                                            iFlush = 0;
+                                        }
+
+                                        $('#grid').data("kendoGrid").dataSource.read();
+                                        $('#grid2').data("kendoGrid").dataSource.read();
+                                        $('#grid3').data("kendoGrid").dataSource.read();
+                                        $('#grid4').data("kendoGrid").dataSource.read();
+                                        $('#grid5').data("kendoGrid").dataSource.read();
+                                        $('#grid6').data("kendoGrid").dataSource.read();
+                                        $('#chart').data("kendoChart").dataSource.read();
+
+                                        GetDashboardAlert("MHS");
+
+                                    }
+                                    CurrentDTM = data[0].DTM1;
+                                } catch (err) { };
+
+                            }
+                        });
+
+
+                    }
+
+                }, 60000);
+
+            }
+
+
+
+
+        </script>
+    </div>
+
+
+
+</body>
+</html>

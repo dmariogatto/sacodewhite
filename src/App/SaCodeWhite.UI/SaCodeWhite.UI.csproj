@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Fonts\MaterialIcons-Regular.ttf" />
+    <None Remove="Resources\Fonts\NunitoSans-Bold.ttf" />
+    <None Remove="Resources\Fonts\NunitoSans-BoldItalic.ttf" />
+    <None Remove="Resources\Fonts\NunitoSans-Italic.ttf" />
+    <None Remove="Resources\Fonts\NunitoSans-Regular.ttf" />
+    <None Remove="Resources\Fonts\NunitoSans-SemiBold.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Fonts\MaterialIcons-Regular.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\NunitoSans-Bold.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\NunitoSans-BoldItalic.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\NunitoSans-Italic.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\NunitoSans-Regular.ttf" />
+    <EmbeddedResource Include="Resources\Fonts\NunitoSans-SemiBold.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.4.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.4.0" />
+    <PackageReference Include="Plugin.StoreReview" Version="3.1.0" />
+    <PackageReference Include="Xamarin.Essentials.Interfaces" Version="1.7.0" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SaCodeWhite\SaCodeWhite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\OverviewPage.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\HospitalPage.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SettingsPage.xaml.cs">
+      <DependentUpon>Views\SettingsPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

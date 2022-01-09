@@ -1,0 +1,13 @@
+{
+  "ApiUrlBase": "{ApiUrlBase}",
+
+  "ApiKeyHospitals": "{ApiKeyHospitals}",
+  "ApiKeyTriageCategories": "{ApiKeyTriageCategories}",
+  "ApiKeyAmbulanceDashboards": "{ApiKeyAmbulanceDashboards}",
+  "ApiKeyEmergencyDepartmentDashboards": "{ApiKeyEmergencyDepartmentDashboards}",
+  "ApiKeyRegisterDevice": "{ApiKeyRegisterDevice}",
+  "ApiKeyDeleteDevice": "{ApiKeyDeleteDevice}",
+
+  "AppCenterAndroidSecret": "{AppCenterAndroidSecret}",
+  "AppCenterIosSecret": "{AppCenterIosSecret}"
+}

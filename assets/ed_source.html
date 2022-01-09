@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emergency Depatment Dashboard</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+    <link href="./Content/kendo/2020R1/kendo.common.min.css" rel="stylesheet" />
+
+    <link href="./Content/kendo/2020R1/kendo.silver.min.css" rel="stylesheet" />
+    <link href="./Content/kendo/2020R1/kendo.silver.mobile.min.css" rel="stylesheet" />
+    <link href="./Content/bootstrap.min.css" rel="stylesheet" />
+
+    <script src="./scripts/jquery-1.11.1.js"></script>
+    <script src="./scripts/Kendo/2020R1/kendo.all.min.js"></script>
+    <script src="./scripts/bootstrap.min.js"></script>
+
+    <!--Dashboard Alerts-->
+    <link href="css/DashboardAlert.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="scripts/DashboardAlertsExt.js"></script>
+
+    <script>
+        var msie = document.documentMode;
+
+        if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) {
+            document.write('<script src="https://cdn.polyfill.io/v2/polyfill.js?features=fetch"><\/script>');
+        }
+
+        $(function () {
+            GetDashboardAlert("ED");
+        });
+    </script>
+
+
+    <style type="text/css">
+
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .header {
+            /*width: 970px;*/
+            text-align: left;
+            margin: 0 auto;
+        }
+
+        .wrapper {
+            /*width: 958px;*/
+            text-align: left;
+            margin: 0 auto;
+            background-color: #8BAFA4;
+            padding: 4px;
+        }
+
+        .k-grid-header {
+            padding: 0 !important;
+        }
+
+        .k-grid-content {
+            overflow-y: visible;
+        }
+
+
+        .dashboardHeader {
+            background-color: #58B296;
+            height: 30px;
+        }
+
+        .dashboardHeaderLabel {
+            color: white;
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .dashboardHeaderLabelSmall {
+            color: white;
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            font-size: 12px
+        }
+
+        .k-grid-header, .k-header {
+            background-color: #58B296; /*#2EB3A6 ;*/
+        }
+
+            .k-grid-header, .k-header, .k-grid-header .k-header .k-link {
+                color: white !important;
+            }
+
+                .k-grid-header .k-header .k-link:hover {
+                    background-color: transparent !important;
+                }
+
+        .k-state-active {
+            background-color: transparent;
+        }
+
+        .k-grid {
+            font-size: 10px;
+            height: 100%;
+        }
+
+            .k-grid td {
+                line-height: 1em;
+            }
+
+        .k-grid-footer {
+            position: relative;
+            left: 0px;
+            bottom: 0px;
+        }
+
+        .k-grid {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+        }
+
+        .Headerlabel {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .Chartlabel {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+        }
+
+        .NotesLabel {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+            font-size: 10px;
+            font-weight: normal;
+            color: white;
+            margin-left: 100px
+        }
+
+        .k-content {
+            font-family: 'Segoe UI',Arial, Helvetica, sans-serif;
+        }
+
+
+        .wrap {
+            display: table;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .footer {
+            position: fixed;
+            left: 0px;
+            bottom: 0px;
+            height: 40px;
+            width: 100%;
+            display: none
+        }
+
+        /*@media only screen and (max-width: 1000px) {
+            .footer {
+               display:block
+            }
+            .leftPanel  {
+                display: table-header-group;
+                width: 100%;
+                height:270px
+            }
+
+            .rightPanel, .midPanel , .leftPanel2,.rightPanel2   {
+                display: none;
+            }
+
+
+            .k-grid {
+            font-size: 20px;
+
+        }
+        }*/
+
+    </style>
+
+</head>
+<body>
+    <!--<div id="header" class="header">
+        <img src="Content/Header.png" width="970" />
+    </div>-->
+    <div id="wrapper" class="wrapper">
+        <div class="alert-container col-lg-3  col-md-5 col-md-offset-4 col-sm-8 col-sm-offset-2 col-12"> </div>
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-lg-12" style="padding:0px">
+                    <div class="dashboardHeader">
+                        <label class="dashboardHeaderLabel pull-left" style="margin-left:5px">Emergency Dept Dashboard</label>&nbsp;
+                        <a href="#" class="pull-left" style="margin-left:10px" onclick="window.open('https://www.sahealth.sa.gov.au/wps/wcm/connect/public+content/sa+health+internet/about+us/our+performance/our+hospital+dashboards/about+the+ed+dashboard', '_blank')">
+                            <img src="Content/Help_White.png" style="height:15px;margin-bottom:5px" />
+                        </a>
+                        <div class="alert-exclamation pull-left" title="Click here to open the messages" style="display:none;margin-left:10px" onclick="OpenAlert()">
+                            <i class="fa fa-exclamation-triangle fa-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row" style="padding-left:10px;padding-right:10px">
+            <label class="dashboardHeaderLabelSmall">Data Current To:&nbsp;</label><label class="dashboardHeaderLabelSmall" id="CurrentDate"></label>
+
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                <label id="lblStatus" class="Headerlabel">Status</label>
+                <label class="NotesLabel"># Excludes high priority cases</label>
+                <div id="grid" class="k-grid" style="width:100%"></div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                <label id="lblHospital" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Streams</label>
+                <div id="gridDetail" class="k-grid"></div>
+                <label id="lblscreenwidth1" class="NotesLabel" style="display:none">Note: This table may be scrolled based on your screen size. Scroll in whitespace at bottom of table.</label>
+            </div>
+
+
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-7">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-3">
+                        <label id="lblHospital2" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Expected Arrivals</label><div id="gridExpArrivals" class="k-grid"></div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                        <label id="lblHospital3" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Departures (Last 1Hr)</label><div id="gridDepartures" class="k-grid"></div>
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5">
+                        <label id="lblHospital4" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Triage Categories</label><div id="gridTriage" class="k-grid"></div>
+                    </div>
+
+                </div>
+
+                <label id="lblHospital5" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Waiting Times</label>
+                <div class="row">
+                    <!--<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">-->
+                    <!--<label id="lblHospital5" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Waiting Times</label>-->
+                    <!--<div style="width: 100%; display: table; ">
+                    <div style="display: table-row">
+
+                        <div id="gridWaitingTimes" class="k-grid" style="max-width:350px;max-height:80px;display: table-cell;padding-top:0px;vertical-align:top;"></div>
+                        <div id="chart4" style="height:80px; min-width:240px;  margin-top:10px; margin-left:0px;border-left-style:none;display: table-cell;padding-top:0px;vertical-align:top  "></div>
+                    </div>
+                </div>-->
+
+
+                    <div class="col-xs-12 col-sm-6 col-md-12 col-lg-7">
+
+                        <div id="gridWaitingTimes" class="k-grid"></div>
+                        <label id="lblscreenwidth2" class="NotesLabel" style="display:none;max-width: 180px; word-wrap: break-word">Note: This table may be scrolled based on your screen size. Scroll in whitespace at bottom of table.</label>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-12 col-lg-5">
+                        <div id="chart4"></div>
+                    </div>
+
+
+                    <!--</div>-->
+
+
+                </div>
+
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-5">
+                <label id="lblHospital6" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Activity last 24 hours</label>
+                <div id="chart5" style="height:345px; "></div>
+            </div>
+
+
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <label id="lblStatus" class="Chartlabel">% Admissions</label><div id="chart1" style="height:70px; "></div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <label id="lblStatus" class="Chartlabel">LOS < 4 Hrs - All</label><div id="chart2" style="height:70px; "></div>
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                <label id="lblStatus" class="Chartlabel">LOS < 4 Hrs - Disch</label><div id="chart3" style="height:70px; "></div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+
+        <!--<div class="dashboardHeader">
+        <label class="dashboardHeaderLabel">Emergency Dept Dashboard</label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label class="dashboardHeaderLabelSmall">Data Current To: </label><label class="dashboardHeaderLabelSmall" id="CurrentDate"></label>
+        <span id="MessageAlert"><img src="Content/Amber.png" style="margin-left:100px" />&nbsp;&nbsp;<label id="lblHeaderAlert" class="Headerlabel">Message Alert</label></span>
+        <button style="margin-left:200px " id="btnHelp" onclick="window.open('http://www.sahealth.sa.gov.au/wps/wcm/connect/public+content/sa+health+internet/about+us/our+performance/our+hospital+dashboards/about+the+ed+dashboard', '_blank')">Help</button>
+
+    </div>-->
+        <!--<div class="wrap">
+        <div class="leftPanel">
+            <label id="lblStatus" class="Headerlabel">Status</label>
+            <label class="NotesLabel"># Excludes high priority cases</label>
+            <div id="grid" class="k-grid" style="width:100%"></div>
+        </div>
+        <div style="width:10px"></div>
+        <div class="rightPanel">
+            <label id="lblHospital" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Streams</label>
+            <div id="gridDetail" class="k-grid"></div>
+        </div>
+
+    </div>-->
+        <!--<div class="wrap">
+        <div class="leftPanel2" style="vertical-align:top  ">
+            <table>
+                <tr style="height:200px">
+                    <td><label id="lblHospital2" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Expected Arrivals</label><div id="gridExpArrivals" class="k-grid"></div></td>
+                    <td><label id="lblHospital3" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Departures (Last 1Hr)</label><div id="gridDepartures" class="k-grid"></div></td>
+                    <td><label id="lblHospital4" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Triage Categories</label><div id="gridTriage" class="k-grid"></div></td>
+                </tr>
+                <tr style="height:180px">
+                    <td colspan="3">
+                        <table border="0" style="width:100%;margin:0px; padding:0px">
+                            <tr>
+                                <td style="width:100%; margin-right:0px; padding-right:0px" valign="top">
+                                    <label id="lblHospital5" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Waiting Times</label>
+                                    <div id="gridWaitingTimes" class="k-grid" style="margin-right:0px; border-right-style:none   "></div>
+                                </td>
+                                <td style="margin-left:0px; padding-left:0px">
+                                    <div id="chart4" style="height:165px; width:250px; margin-top:10px; margin-left:0px;border-left-style:none  "></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="rightPanel2" style="vertical-align:top;">
+            <table>
+                <tr style="height:380px">
+                    <td>
+                        <label id="lblHospital6" class="Headerlabel"></label>&nbsp;<label class="Headerlabel">Activity last 24 hours</label>
+                        <div id="chart5" style="height:345px; width:350px;"></div>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>-->
+        <!--<div class="wrap">
+        <div class="leftPanel">
+            <label class="Headerlabel"></label>
+            <table>
+                <tr>
+                    <td><label id="lblStatus" class="Chartlabel">% Admissions</label><div id="chart1" style="height:70px; width:316px"></div></td>
+                    <td><label id="lblStatus" class="Chartlabel">LOS < 4 Hrs - All</label><div id="chart2" style="height:70px; width:316px"></div></td>
+                    <td><label id="lblStatus" class="Chartlabel">LOS < 4 Hrs - Disch</label><div id="chart3" style="height:70px; width:316px"></div></td>
+                </tr>
+            </table>
+
+        </div>
+    </div>-->
+
+
+
+        <div class="footer" style="text-align:center;">
+            <div class="k-content" style="display:inline-block   ">
+                <ul id="select-navmenu">
+                    <li>
+                        IP Dashboard
+                    </li>
+                    <li>
+                        ED Dashboard
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            $(function () {
+                $("#select-navmenu").kendoMobileButtonGroup({
+                    select: function (e) {
+                        if (e.index == 0) {
+                            window.location.href = 'IPDashboard.html';
+                        }
+                        else if (e.index == 1) {
+                            window.location.href = 'EDDashboard.html';
+                        }
+                    },
+                    index: 1
+                });
+            });
+
+            ResizeControls();
+
+            function ResizeControls() {
+                if (screen.width < 1120) {
+                    document.getElementById('lblscreenwidth1').style.display = "block";
+                }
+                else {
+                    document.getElementById('lblscreenwidth1').style.display = "none";
+                }
+
+                if (screen.width < 1080) {
+                    document.getElementById('lblscreenwidth2').style.display = "block";
+                }
+                else {
+                    document.getElementById('lblscreenwidth2').style.display = "none";
+                }
+
+                try {
+
+                    var chart5 = $("#chart5").data("kendoChart");
+
+                    chart5.resize();
+                    var chart4 = $("#chart4").data("kendoChart");
+
+                    chart4.resize();
+
+                    var gridWaitingTimes = $("#gridWaitingTimes").data("kendoGrid");
+
+                    gridWaitingTimes.resize(true);
+
+                } catch (err) {
+
+                }
+
+
+
+            }
+
+            window.onresize = ResizeControls;
+
+        </script>
+
+
+
+
+        <script>
+
+
+            var currentRowIndex = 0;
+            function createStatusGrid() {
+
+                try {
+                    $("#grid").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/ED001.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "notequal", value: "" },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP: { type: "string" },
+                                            DTM: { type: "date" },
+                                            EA: { type: "number" },
+                                            WTBS: { type: "number" },
+                                            COM_TREAT: { type: "number" },
+                                            CAP: { type: "number" },
+                                            AVG_WAIT: { type: "number" }
+                                        }
+                                    }
+                                },
+                                aggregate: [{ field: "EA", aggregate: "sum" },
+                                { field: "WTBS", aggregate: "sum" },
+                                { field: "COM_TREAT", aggregate: "sum" },
+                                { field: "CAP", aggregate: "sum" },
+                                { field: "AVG_WAIT", aggregate: "average" }
+                                ]
+                            },
+                            height: 240,
+                            resizable: true,
+                            groupable: false,
+                            scrollable: false,
+                            sortable: true,
+                            selectable: "row",
+                            columns: [{
+                                field: "HOSP_SHORT",
+                                title: "Hosp",
+                                footerTemplate: "Total",
+                                width: 40
+                            },
+                            {
+                                field: "EA",
+                                title: "EA",
+                                aggregates: ["sum"],
+                                footerTemplate: "#=sum#",
+                                width: 20
+                            }, {
+                                field: "WTBS",
+                                title: "WTBS",
+                                aggregates: ["sum"],
+                                footerTemplate: "#=sum#",
+                                width: 35
+                            }, {
+                                field: "COM_TREAT",
+                                title: "Com Treat",
+                                headerAttributes: {
+                                    style: "white-space: normal; height: 45px"
+                                },
+                                aggregates: ["sum"],
+                                footerTemplate: "#=sum#",
+                                width: 50
+                            }, {
+                                field: "CAP",
+                                title: "CAP",
+                                aggregates: ["sum"],
+                                footerTemplate: "#=sum#",
+                                width: 25
+                            }, {
+                                //field: "ALERT",
+                                title: "*",
+                                field: "ALERT1",
+                                width: 20,
+                                template: "<img src=" + "# if ((data.WTBS+data.COM_TREAT)/data.CAP<.80) { # "
+                                    + "'./Content/Green.png'" +
+                                    " # } else if ((data.WTBS+data.COM_TREAT)/data.CAP>=.80 && (data.WTBS+data.COM_TREAT)/data.CAP<.95) { # " +
+                                    "'./Content/Amber.png'" +
+                                    " # } else if ((data.WTBS+data.COM_TREAT)/data.CAP>=.95 && (data.WTBS+data.COM_TREAT)/data.CAP<1.25) { # " +
+                                    "'./Content/Red.png'" +
+                                    " # } else if ((data.WTBS+data.COM_TREAT)/data.CAP>=1.25) { # " +
+                                    "'./Content/White.png'" +
+                                    " # } else { # " +
+                                    "'./Content/Blank.png'" + " # } #" +
+                                    "</img>"
+                            }, {
+                                field: "AVG_WAIT",
+                                title: "Avg wait (min)#",
+                                headerAttributes: {
+                                    style: "white-space: normal"
+                                },
+                                format: "{0:N0}",
+                                width: 50
+                            }
+                            ],
+                            dataBound: function (e) {
+
+                                var grid = $("#grid").data("kendoGrid");
+                                if (currentRowIndex == 0) {
+                                    //grid.content.find(".k-scrollbar-vertical").scrollTop(0);
+                                    //setTimeout(function () {
+
+                                    grid.select(e.sender.tbody.find("tr:first-child"));
+                                    //grid.select(e.sender.tbody.find("tr:eq(" + 2 + ")"));
+                                    var HospCell = e.sender.tbody.find("td:first-child");
+                                    var HospLongCell = e.sender.tbody.find("tr:first-child")[0].cells[1];
+
+                                    createDetailParts(HospCell[0].outerText);
+
+                                    document.getElementById('lblHospital').innerHTML = HospCell[0].outerText;
+                                    document.getElementById('lblHospital2').innerHTML = HospCell[0].outerText;
+                                    document.getElementById('lblHospital3').innerHTML = HospCell[0].outerText;
+                                    document.getElementById('lblHospital4').innerHTML = HospCell[0].outerText;
+                                    document.getElementById('lblHospital5').innerHTML = HospCell[0].outerText;
+                                    document.getElementById('lblHospital6').innerHTML = HospCell[0].outerText;
+                                    //}, 50)
+                                }
+                                else {
+                                    grid.select(e.sender.tbody.find("tr:eq(" + currentRowIndex + ")"));
+                                }
+
+
+                            },
+                            change: function (e) {
+                                var data = this.dataItem(this.select());
+                                try {
+                                    //createDetailParts(data.HOSP_SHORT);
+
+                                    updateSearchFilters("kendoGrid", '#gridDetail', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#gridDetail').data("kendoGrid").dataSource.read();
+
+                                    updateSearchFilters("kendoGrid", '#gridExpArrivals', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#gridExpArrivals').data("kendoGrid").dataSource.read();
+                                    updateSearchFilters("kendoGrid", '#gridDepartures', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#gridDepartures').data("kendoGrid").dataSource.read();
+                                    updateSearchFilters("kendoGrid", '#gridTriage', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#gridTriage').data("kendoGrid").dataSource.read();
+                                    updateSearchFilters("kendoGrid", '#gridWaitingTimes', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#gridWaitingTimes').data("kendoGrid").dataSource.read();
+
+                                    updateSearchFilters("kendoChart", '#chart1', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    updateSearchFilters("kendoChart", '#chart1', "GRAPH_TYPE", "equal", "% Admissions", 0);
+                                    $('#chart1').data("kendoChart").dataSource.read();
+                                    updateSearchFilters("kendoChart", '#chart2', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    updateSearchFilters("kendoChart", '#chart2', "GRAPH_TYPE", "equal", "LOS < 4 Hrs - All", 0);
+                                    $('#chart2').data("kendoChart").dataSource.read();
+                                    updateSearchFilters("kendoChart", '#chart3', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    updateSearchFilters("kendoChart", '#chart3', "GRAPH_TYPE", "equal", "LOS < 4 Hrs - Disch", 0);
+                                    $('#chart3').data("kendoChart").dataSource.read();
+                                    updateSearchFilters("kendoChart", '#chart4', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#chart4').data("kendoChart").dataSource.read();
+                                    updateSearchFilters("kendoChart", '#chart5', "HOSP_SHORT", "equal", data.HOSP_SHORT, 1);
+                                    $('#chart5').data("kendoChart").dataSource.read();
+
+                                    document.getElementById('lblHospital').innerHTML = data.HOSP_SHORT;
+                                    document.getElementById('lblHospital2').innerHTML = data.HOSP_SHORT;
+                                    document.getElementById('lblHospital3').innerHTML = data.HOSP_SHORT;
+                                    document.getElementById('lblHospital4').innerHTML = data.HOSP_SHORT;
+                                    document.getElementById('lblHospital5').innerHTML = data.HOSP_SHORT;
+                                    document.getElementById('lblHospital6').innerHTML = data.HOSP_SHORT;
+
+                                    currentSelection = this.select();
+                                    selectedRows = [];
+                                    currentSelection.each(function () {
+                                        currentRowIndex = $(this).closest("tr").index();
+                                        if (selectedRows.indexOf(currentRowIndex) == -1) {
+                                            selectedRows.push(currentRowIndex);
+                                        }
+
+                                    })
+
+
+
+                                } catch (err) {
+
+                                }
+
+                            }
+
+
+
+                        });
+
+                    $("#grid").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "HOSP_SHORT":
+                                    text += "Abbreviation for the hospital name";
+                                    break;
+                                case "EA":
+                                    text += "Total number of expected arrivals includes ambulance and other sources of notification";
+                                    break;
+                                case "WTBS":
+                                    text += "Number of patients currently waiting to be seen in the ED";
+                                    break;
+                                case "COM_TREAT":
+                                    text += "Number of patients currently in ED who have commenced their treatment";
+                                    break;
+                                case "CAP":
+                                    text += "Total number of general treatment areas available within the ED";
+                                    break;
+                                case "AVG_WAIT":
+                                    text += "Avg wait time (arrival to assessment by an ED clinician) over past 2 hours excl high priority cases";
+                                    break;
+                                case "ALERT1":
+                                    text += "Current Status of the ED calculated from number of patients in ED compared to capacity";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+
+                getDateData();
+                GetDashboardAlert("ED");
+
+
+            }
+
+            function getDateData() {
+
+
+                $.ajax({
+                    url: './json/ED_Etl_Cntrl.json',
+                    type: 'GET',
+                    dataType: 'json',
+                    cache: false,
+                    success: function (data) {
+                        try {
+                            document.getElementById('CurrentDate').innerHTML = data[0].CURR_DTM;//.substring(0, data[0].CURR_DTM.length - 3);
+
+                        } catch (err) { };
+
+                    }
+                });
+
+            }
+
+
+
+            function createDetailParts(h) {
+
+
+
+                try {
+                    $("#gridDetail").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/ED003.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "equal", value: h },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            STREAM: { type: "string" },
+                                            WTS_TOT: { type: "number" },
+                                            WTS_WOT: { type: "number" },
+                                            WTS_ALERT: { type: "number" },
+                                            TREAT_TOT: { type: "number" },
+                                            WFB_TOT: { type: "number" },
+                                            WFB_WOT: { type: "number" },
+                                            WFB_ALERT: { type: "number" },
+                                            TT_0_2: { type: "number" },
+                                            TT_2_3: { type: "number" },
+                                            TT_3_4: { type: "number" },
+                                            TT_4_8: { type: "number" },
+                                            TT_8Plus: { type: "number" },
+                                            EECU: { type: "number" },
+                                            TOT: { type: "number" }
+                                        }
+                                    }
+                                },
+                                aggregate: [{ field: "WTS_TOT", aggregate: "sum" },
+                                { field: "WTS_WOT", aggregate: "sum" },
+                                { field: "WTS_ALERT", aggregate: "sum" },
+                                { field: "TREAT_TOT", aggregate: "sum" },
+                                { field: "WFB_TOT", aggregate: "sum" },
+                                { field: "WFB_WOT", aggregate: "sum" },
+                                { field: "WFB_ALERT", aggregate: "sum" },
+                                { field: "TT_0_2", aggregate: "sum" },
+                                { field: "TT_2_3", aggregate: "sum" },
+                                { field: "TT_3_4", aggregate: "sum" },
+                                { field: "TT_4_8", aggregate: "sum" },
+                                { field: "TT_8Plus", aggregate: "sum" },
+                                { field: "EECU", aggregate: "sum" },
+                                { field: "TOT", aggregate: "sum" }
+
+                                ]
+                            },
+                            height: 240,
+                            resizable: true,
+                            groupable: false,
+                            sortable: true,
+                            scrollable: true,
+                            columns:
+                                [
+                                    {
+                                        title: "",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "STREAM",
+                                                title: "Stream",
+                                                footerTemplate: "Total",
+                                                width: 130
+                                            }],
+                                        locked: true
+                                    },
+
+
+                                    {
+                                        title: "Wait to See",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "WTS_TOT",
+                                                title: "Tot",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 30
+                                            },
+                                            {
+                                                field: "WTS_WOT",
+                                                title: "WOT",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 40
+                                            },
+                                            {
+                                                title: "*",
+                                                field: "WTS_ALERT",
+                                                width: 30,
+                                                template: "<img src=" + "# if (data.WTS_ALERT<=0.5) { # "
+                                                    + "'./Content/Red.png'" +
+                                                    " # } else { # " +
+                                                    "'./Content/Blank.png'" + " # } #" +
+                                                    "</img>"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "",
+                                        width: 10
+                                    },
+                                    {
+                                        title: "Treat",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "TREAT_TOT",
+                                                title: "Tot",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 40
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "",
+                                        width: 10
+                                    },
+                                    {
+                                        title: "Wait For Bed",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "WFB_TOT",
+                                                title: "Tot",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 30
+                                            }, {
+                                                field: "WFB_WOT",
+                                                title: "WOT",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 40
+                                            }, {
+                                                title: "*",
+                                                field: "WFB_ALERT",
+                                                width: 30,
+                                                template: "<img src=" + "# if (data.WFB_ALERT<=-0.50) { # "
+                                                    + "'./Content/Red.png'" +
+                                                    " # } else if (data.WFB_ALERT>-0.5 && data.WFB_ALERT<=0.5) { # " +
+                                                    "'./Content/Amber.png'" +
+                                                    " # } else { # " +
+                                                    "'./Content/Blank.png'" + " # } #" +
+                                                    "</img>"
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "",
+                                        width: 10
+                                    },
+
+
+                                    {
+                                        title: "Total Time in ED",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "font-weight: bold; text-align: center"
+                                        },
+                                        columns: [
+                                            {
+                                                field: "TT_0_2",
+                                                title: "0-2",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 30
+                                            }, {
+                                                field: "TT_2_3",
+                                                title: "2-3",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 30
+                                            }, {
+                                                field: "TT_3_4",
+                                                title: "3-4",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 30
+                                            }, {
+                                                field: "TT_4_8",
+                                                title: "4-8",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 30
+                                            }, {
+                                                field: "TT_8Plus",
+                                                title: "8+",
+                                                aggregates: ["sum"],
+                                                footerTemplate: "#=sum#",
+                                                width: 30
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        title: "",
+                                        width: 10
+                                    }, {
+                                        field: "EECU",
+                                        title: "EECU",
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 40
+                                    }, {
+                                        field: "TOT",
+                                        title: "Tot",
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 40
+                                    },
+                                    {
+                                        title: "",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "width:10px"
+                                        },
+                                        width: 0
+                                    }
+
+
+                                ]
+
+                        });
+
+                    $("#gridDetail").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+
+                            switch (e.target.data().field) {
+                                case "STREAM":
+                                    text += "The name of the clinical stream into which patients have been placed for treatment";
+                                    break;
+                                case "WTS_TOT":
+                                    text += "Number of patients with status waiting to be seen for the stream";
+                                    break;
+                                case "WTS_WOT":
+                                    text += "Number of patients waiting to be seen who have waited over the recommended waiting time";
+                                    break;
+                                case "WTS_ALERT":
+                                    text += "Indicates 1 or more patients are over the wait time threshold for the triage category";
+                                    break;
+                                case "TREAT_TOT":
+                                    text += "Number of patients with current status Being Treated for the Stream";
+                                    break;
+                                case "WFB_TOT":
+                                    text += "Number of patients with current status Waiting for a Bed for the Stream";
+                                    break;
+                                case "WFB_WOT":
+                                    text += "Number of patients waiting for a bed who have waited over the recommended time";
+                                    break;
+                                case "WFB_ALERT":
+                                    text += "Thresholds: Gen patients > 6 hrs, Red > 12 Hrs; Mental Health = 12 and 24 Hrs";
+                                    break;
+                                case "TT_0_2":
+                                    text += "Number of patients currently in ED where total visit time is less than 2 hours";
+                                    break;
+                                case "TT_2_3":
+                                    text += "Number of patients currently in ED where total visit time is between 2 and 3 hours";
+                                    break;
+                                case "TT_3_4":
+                                    text += "Number of patients currently in ED where total visit time is between 3 and 4 hours";
+                                    break;
+                                case "TT_4_8":
+                                    text += "Number of patients currently in ED where total visit time is between 4 and 8 hours";
+                                    break;
+                                case "TT_8Plus":
+                                    text += "Number of patients currently in ED where total visit time is greater than 8 hours";
+                                    break;
+                                case "EECU":
+                                    text += "Total number of patients currently admitted to the Extended Emergency Care Unit";
+                                    break;
+                                case "TOT":
+                                    text += "Total number of patients currently in this stream within the ED";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+
+
+
+                // CREATE % ADMISSIONS CHART
+                // CREATE LOS < 4 HRS - ALL CHART
+                // CREATE LOS < 4 HRS - Disch CHART
+
+                try {
+
+                    $("#chart1").kendoChart({
+                        theme: "Silver",
+                        plotArea: {
+                            background: "white"
+                        },
+                        chartArea: {
+                            background: "white",
+                            border: {
+                                width: 1,
+                                color: "#EAEAEA"
+                            }
+
+                        },
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "./json/ED005.json",
+                                    dataType: "json",
+                                    type: 'GET',
+                                    cache: false
+                                }
+                            },
+                            filter: {
+                                logic: "and",
+                                filters: [{ field: "HOSP_SHORT", operator: "equal", value: h },
+                                { field: "GRAPH_TYPE", operator: "equal", value: "% Admissions" }]
+                            },
+                        },
+                        title: {
+                            text: "% Admissions",
+                            visible: false
+                        },
+                        legend: {
+                            visible: false
+                        },
+                        series:
+                            [{
+                                type: "bullet",
+                                currentField: "VAL",
+                                name: "Val",
+                                targetField: "TARGET",
+                                target: {
+                                    color: "black",
+                                    line: {
+                                        width: 1
+                                    }
+                                },
+                                labels: {
+                                    visible: true,
+                                    template: "#: value.current #%"
+                                }
+                            }],
+                        valueAxis: {
+                            labels: {
+                                format: "N0",
+                                font: "10px sans-serif"
+                            },
+                            min: 0,
+                            max: 100,
+                            line: {
+                                visible: false
+                            }
+                        },
+                        tooltip: {
+                            visible: true,
+                            //format: "{0:P0}"
+                            template: "#: value.current #%"
+                        },
+                        transitions: false
+                    });
+
+                } catch (err) { };
+
+                try {
+                    $("#chart2").kendoChart({
+                        theme: "Silver",
+                        plotArea: {
+                            background: "white"
+                        },
+                        chartArea: {
+                            background: "white",
+                            border: {
+                                width: 1,
+                                color: "#EAEAEA"
+                            }
+
+                        },
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "./json/ED005.json",
+                                    dataType: "json",
+                                    type: 'GET',
+                                    cache: false
+                                }
+                            },
+                            filter: {
+                                logic: "and",
+                                filters: [{ field: "HOSP_SHORT", operator: "equal", value: h },
+                                { field: "GRAPH_TYPE", operator: "equal", value: "LOS < 4 Hrs - All" }]
+                            },
+                        },
+                        title: {
+                            text: "LOS < 4 Hrs - All",
+                            visible: false
+                        },
+                        legend: {
+                            visible: false
+                        },
+                        series:
+                            [{
+                                type: "bullet",
+                                currentField: "VAL",
+                                name: "Val",
+                                targetField: "TARGET",
+                                target: {
+                                    color: "black",
+                                    line: {
+                                        width: 1
+                                    }
+                                },
+                                labels: {
+                                    visible: true,
+                                    template: "#: value.current #%"
+                                }
+                            }],
+                        valueAxis: {
+                            labels: {
+                                format: "N0",
+                                font: "10px sans-serif"
+                            },
+                            min: 0,
+                            max: 100,
+                            line: {
+                                visible: false
+                            }
+                        },
+                        tooltip: {
+                            visible: true,
+                            //format: "{0:P0}"
+                            template: "#: value.current #%"
+                        },
+                        transitions: false
+                    });
+                } catch (err) { };
+
+                try {
+                    $("#chart3").kendoChart({
+                        theme: "Silver",
+                        plotArea: {
+                            background: "white"
+                        },
+                        chartArea: {
+                            background: "white",
+                            border: {
+                                width: 1,
+                                color: "#EAEAEA"
+                            }
+
+                        },
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "./json/ED005.json",
+                                    dataType: "json",
+                                    type: 'GET',
+                                    cache: false
+                                }
+                            },
+                            filter: {
+                                logic: "and",
+                                filters: [{ field: "HOSP_SHORT", operator: "equal", value: h },
+                                { field: "GRAPH_TYPE", operator: "equal", value: "LOS < 4 Hrs - Disch" }]
+                            },
+                        },
+                        title: {
+                            text: "LOS < 4 Hrs - Disch",
+                            visible: false
+                        },
+                        legend: {
+                            visible: false
+                        },
+                        series:
+                            [{
+                                type: "bullet",
+                                currentField: "VAL",
+                                name: "Val",
+                                targetField: "TARGET",
+                                target: {
+                                    color: "black",
+                                    line: {
+                                        width: 1
+                                    }
+                                },
+                                labels: {
+                                    visible: true,
+                                    template: "#: value.current #%"
+                                }
+                            }],
+                        valueAxis: {
+                            labels: {
+                                format: "N0",
+                                font: "10px sans-serif"
+                            },
+                            min: 0,
+                            max: 100,
+                            line: {
+                                visible: false
+                            }
+                        },
+                        tooltip: {
+                            visible: true,
+                            //format: "{0:P0}"
+                            template: "#: value.current #%"
+                        },
+                        transitions: false
+                    });
+                } catch (err) { };
+
+
+
+
+
+
+                //BIND EXPECTED ARRIVALS
+                try {
+                    $("#gridExpArrivals").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/ED007.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "equal", value: h },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            CATEGORY: { type: "string" },
+                                            TOTAL: { type: "number" }
+                                        }
+                                    }
+                                },
+                                aggregate: [{ field: "TOTAL", aggregate: "sum" }
+                                ]
+                            },
+                            height: 160,
+                            resizable: true,
+                            groupable: false,
+                            sortable: true,
+                            scrollable: false,
+                            columns:
+                                [
+
+                                    {
+                                        field: "CATEGORY",
+                                        title: "Category",
+                                        footerTemplate: "Total",
+                                        width: 100
+                                    },
+                                    {
+                                        field: "TOTAL",
+                                        title: "Total",
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 40
+                                    }
+
+                                ]
+                            ,
+                            dataBound: function (e) {
+
+
+                            }
+
+                        });
+
+                    $("#gridExpArrivals").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "CATEGORY":
+                                    text += "Type of expected arrivals to the selected hospital either via ambulance or other means";
+                                    break;
+                                case "TOTAL":
+                                    text += "Total number of expected arrivals for each category";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+
+
+
+
+                //BIND DEPATURES
+                try {
+                    $("#gridDepartures").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/ED009.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "equal", value: h },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            DEP_TYPE: { type: "string" },
+                                            TOTAL: { type: "number" }
+                                        }
+                                    }
+                                },
+                                aggregate: [{ field: "TOTAL", aggregate: "sum" }
+                                ]
+                            },
+                            height: 160,
+                            resizable: true,
+                            groupable: false,
+                            sortable: true,
+                            scrollable: false,
+                            columns:
+                                [
+
+                                    {
+                                        field: "DEP_TYPE",
+                                        title: "Depature Type",
+                                        footerTemplate: "Total",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "width:150px"
+                                        },
+                                        width: 150
+                                    },
+                                    {
+                                        field: "TOTAL",
+                                        title: "Total",
+                                        headerAttributes: {
+                                            "class": "header",
+                                            style: "width:40px"
+                                        },
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 40
+                                    }
+
+                                ]
+
+                        });
+
+                    $("#gridDepartures").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "DEP_TYPE":
+                                    text += "Destination of patient at conclusion of ED visit";
+                                    break;
+                                case "TOTAL":
+                                    text += "Total number of departures per departure status for the last hour";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+
+
+                //BIND TRIAGE
+                try {
+                    $("#gridTriage").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/ED006.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "equal", value: h },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            CAT: { type: "string" },
+                                            WTS: { type: "number" },
+                                            WOT: { type: "number" },
+                                            ALERT: { type: "number" },
+                                            OTH: { type: "number" },
+                                            TOT: { type: "number" }
+                                        }
+                                    }
+                                },
+                                aggregate: [{ field: "CAT", aggregate: "sum" },
+                                { field: "WTS", aggregate: "sum" },
+                                { field: "WOT", aggregate: "sum" },
+                                { field: "OTH", aggregate: "sum" },
+                                { field: "TOT", aggregate: "sum" }
+
+                                ]
+                            },
+                            height: 160,
+                            resizable: true,
+                            groupable: false,
+                            sortable: true,
+                            scrollable: false,
+                            columns:
+                                [
+
+                                    {
+                                        field: "CAT",
+                                        title: "Cat.",
+                                        footerTemplate: "Total",
+                                        width: 30
+                                    },
+                                    {
+                                        field: "WTS",
+                                        title: "WTS",
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 30
+                                    },
+                                    {
+                                        field: "WOT",
+                                        title: "WOT",
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 30
+                                    },
+                                    {
+                                        //field: "ALERT",
+                                        title: "*",
+                                        field: "ALERT",
+                                        width: 30,
+                                        template: "<img src=" + "# if (data.ALERT<=-0.50) { # "
+                                            + "'./Content/Red.png'" +
+                                            " # } else if (data.ALERT>-0.5 && data.ALERT<=0.5) { # " +
+                                            "'./Content/Amber.png'" +
+                                            " # } else { # " +
+                                            "'./Content/Blank.png'" + " # } #" +
+                                            "</img>"
+                                    },
+                                    {
+                                        field: "OTH",
+                                        title: "Oth",
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 30
+                                    },
+                                    {
+                                        field: "TOT",
+                                        title: "Tot",
+                                        aggregates: ["sum"],
+                                        footerTemplate: "#=sum#",
+                                        width: 30
+                                    }
+
+                                ]
+
+                        });
+
+                    $("#gridTriage").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "CAT":
+                                    text += "Assessed urgency of the patients need for treatment (1 being highest)";
+                                    break;
+                                case "WTS":
+                                    text += "Number of patients per triage category who are Waiting to be Seen";
+                                    break;
+                                case "WOT":
+                                    text += "Number of patients waiting to be seen who have waited over the recommended waiting time";
+                                    break;
+                                case "ALERT":
+                                    text += "Indicates 1 or more patients are over the wait time threshold for the triage";
+                                    break;
+                                case "OTH":
+                                    text += "Patients in this triage category who have commenced treatment";
+                                    break;
+                                case "TOT":
+                                    text += "Total number of patients per triage category";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+
+
+                //BIND WAITING TIMES GRID
+                // CREATE Wait Times CHART
+                try {
+                    $("#gridWaitingTimes").kendoGrid(
+                        {
+                            dataSource: {
+                                transport: {
+                                    read: {
+                                        url: "./json/ED004.json",
+                                        dataType: "json",
+                                        type: 'GET',
+                                        cache: false
+                                    }
+                                },
+                                filter: { field: "HOSP_SHORT", operator: "equal", value: h },
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            HOSP_SHORT: { type: "string" },
+                                            CATEGORY: { type: "string" },
+                                            c0_2: { type: "number" },
+                                            c2_4: { type: "number" },
+                                            c4_8: { type: "number" },
+                                            c8_12: { type: "number" },
+                                            c12_24: { type: "number" },
+                                            c24Plus: { type: "number" },
+                                            cTOT: { type: "number" }
+                                        }
+                                    }
+                                }
+                            },
+                            height: 152,
+                            resizable: true,
+                            groupable: false,
+                            sortable: false,
+                            scrollable: true,
+                            columns:
+                                [
+
+                                    {
+                                        field: "CATEGORY",
+                                        title: " ",
+                                        width: 110,
+                                        headerAttributes: {
+                                            style: "height:23px"
+                                        }, locked: true
+                                    },
+                                    {
+                                        field: "c0_2",
+                                        title: "0-2",
+                                        width: 35
+                                    },
+                                    {
+                                        field: "c2_4",
+                                        title: "2-4",
+                                        width: 35
+                                    },
+                                    {
+                                        field: "c4_8",
+                                        title: "4-8",
+                                        width: 35
+                                    },
+                                    {
+                                        field: "c8_12",
+                                        title: "8-12",
+                                        width: 35
+                                    },
+                                    {
+                                        field: "c12_24",
+                                        title: "12-24",
+                                        width: 40
+                                    },
+                                    {
+                                        field: "c24Plus",
+                                        title: "24+",
+                                        width: 35
+                                    },
+                                    {
+                                        field: "cTOT",
+                                        title: "Tot",
+                                        width: 30
+                                    },
+                                ]
+
+                        });
+
+                    $("#gridWaitingTimes").kendoTooltip({
+                        filter: "th",
+                        position: "top",
+                        width: 200,
+                        content: function (e) {
+                            var text = "<p style='font-family:Arial; font-size:8pt'>";
+                            e.sender.popup.element.css("visibility", "visible");
+                            switch (e.target.data().field) {
+                                case "CATEGORY":
+                                    text += "Description of what patients are waiting for";
+                                    break;
+                                case "c0_2":
+                                    text += "Number of patients who have been waiting for up to 2 hrs";
+                                    break;
+                                case "c2_4":
+                                    text += "Number of patients who have been waiting between 2 and 4 hrs";
+                                    break;
+                                case "c4_8":
+                                    text += "Number of patients who have been waiting between 4 and 8 hrs";
+                                    break;
+                                case "c8_12":
+                                    text += "Number of patients who have been waiting between 8 and 12 hrs";
+                                    break;
+                                case "c12_24":
+                                    text += "Number of patients who have been waiting between 12 and 24 hrs";
+                                    break;
+                                case "c24Plus":
+                                    text += "Number of patients who have been waiting greater than 24 hrs";
+                                    break;
+                                case "cTOT":
+                                    text += "Total number of patients per waiting category";
+                                    break;
+                                default:
+                                    text = "";
+                                    e.sender.popup.element.css("visibility", "hidden");
+                            }
+                            text += "</p>";
+                            return text;
+                        }
+                    }).data("kendoTooltip");
+
+                } catch (err) { };
+
+                try {
+                    $("#chart4").kendoChart({
+                        theme: "Silver",
+                        plotArea: {
+                            background: "white"
+                        },
+                        chartArea: {
+                            background: "white",
+                            border: {
+                                width: 1,
+                                color: "#EAEAEA"
+                            },
+                            height: 152
+
+                        },
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "./json/ED004.json",
+                                    dataType: "json",
+                                    type: 'GET',
+                                    cache: false
+                                }
+                            },
+                            filter: { field: "HOSP_SHORT", operator: "equal", value: h },
+                            schema: {
+                                model: {
+                                    fields: {
+                                        HOSP_SHORT: { type: "string" },
+                                        CATEGORY: { type: "string" },
+                                        c0_2: { type: "number" },
+                                        c2_4: { type: "number" },
+                                        c4_8: { type: "number" },
+                                        c8_12: { type: "number" },
+                                        c12_24: { type: "number" },
+                                        c24Plus: { type: "number" },
+                                        cTOT: { type: "number" }
+                                    }
+                                }
+                            }
+                        },
+                        legend: {
+                            visible: true,
+                            position: "top",
+                            labels: {
+                                font: "8px sans-serif"
+                            },
+                        },
+                        seriesDefaults: {
+                            type: "bar",
+                            stack: true,
+                            bar: {
+                                opacity: .8
+                            }
+                        },
+                        series:
+                            [{
+                                field: "c0_2",
+                                name: "0-2",
+                                categoryField: "CATEGORY"
+                            }, {
+                                field: "c2_4",
+                                name: "2-4",
+                                categoryField: "CATEGORY"
+                            }, {
+                                field: "c4_8",
+                                name: "4-8",
+                                categoryField: "CATEGORY"
+                            }, {
+                                field: "c8_12",
+                                name: "8-12",
+                                categoryField: "CATEGORY"
+                            }, {
+                                field: "c12_24",
+                                name: "12-24",
+                                categoryField: "CATEGORY"
+                            }, {
+                                field: "c24Plus",
+                                name: "24+",
+                                categoryField: "CATEGORY"
+                            }],
+
+                        valueAxis: {
+                            labels: {
+                                format: "N0",
+                                font: "10px sans-serif"
+                            },
+                            min: 0,
+                            //max: 30,
+                            line: {
+                                visible: false
+                            },
+                            title: {
+                                text: "Patients",
+                                font: "10px sans-serif"
+                            },
+                        },
+                        categoryAxis: {
+                            labels: {
+                                visible: true,
+                                font: "10px sans-serif"
+                            }
+                        },
+                        tooltip: {
+                            visible: true,
+                            format: "{0:N0}"
+                        },
+                        transitions: false
+                    });
+                } catch (err) { };
+
+
+
+
+
+                // CREATE CHART
+                try {
+                    $("#chart5").kendoChart({
+                        theme: "Silver",
+                        plotArea: {
+                            background: "white"
+                        },
+                        chartArea: {
+                            background: "white",
+                            border: {
+                                width: 1,
+                                color: "#EAEAEA"
+                            }
+
+                        },
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "./json/ED002.json",
+                                    dataType: "json",
+                                    type: 'GET',
+                                    cache: false
+                                }
+                            },
+                            filter: { field: "HOSP_SHORT", operator: "equal", value: h },
+                            schema: {
+                                model: {
+                                    fields: {
+                                        ARR: { type: "number" },
+                                        OCC: { type: "number" },
+                                        CAP: { type: "number" },
+                                        WTBS: { type: "number" },
+                                        TREAT_COM: { type: "number" },
+                                        DEP: { type: "number" },
+                                        CAP1: { type: "number" },
+                                        CAP2: { type: "number" },
+                                        CAP3: { type: "number" },
+                                        CAP_EXCESS: { type: "number" }
+                                    }
+                                }
+                            }
+                        },
+                        legend: {
+                            visible: true,
+                            position: "top",
+                        },
+                        seriesDefaults: {
+                            type: "line",
+                            bar: {
+                                opacity: .8
+                            },
+                            gap: 0.7
+                        },
+                        series:
+                            [, {
+                                field: "ARR",
+                                name: "ARR",
+                                type: "area",
+                                categoryField: "DTM",
+                                color: "#404040",
+                                opacity: .9
+
+                            }, {
+                                    field: "TREAT_COM",
+                                    name: "Com Treat",
+                                    categoryField: "DTM",
+                                    stack: true,
+                                    type: "column",
+                                    color: "#FFFFFF",
+                                    opacity: .9
+
+
+                                }
+                                , {
+                                    field: "WTBS",
+                                    name: "WTBS",
+                                    type: "column",
+                                    stack: true,
+                                    categoryField: "DTM",
+                                    color: "#DCDCDC",
+                                    opacity: 1
+
+                                }
+
+                                , {
+                                    field: "DEP",
+                                    name: "DEP",
+                                    type: "line",
+                                    categoryField: "DTM",
+                                    markers: {
+                                        visible: false
+                                    }
+
+                                }
+
+                                , {
+                                    field: "CAP",
+                                    name: "CAP",
+                                    type: "line",
+                                    categoryField: "DTM",
+                                    markers: {
+                                        visible: false
+                                    }
+
+                                }
+                            ]
+                        ,
+
+                        valueAxis: {
+                            labels: {
+                                format: "N0"
+                            },
+                            majorGridLines: {
+                                visible: false
+                            },
+                            min: 0,
+                            //max: 30,
+                            line: {
+                                visible: false
+                            },
+                            plotBands: [{
+                                from: 0,
+                                to: 0,
+                                color: "#92D050",
+                                opacity: .9
+                            }, {
+                                from: 0,
+                                to: 0,
+                                color: "#FFC000",
+                                opacity: .9
+                            }, {
+                                from: 0,
+                                to: 0,
+                                color: "#C00000",
+                                opacity: .9
+                            }, {
+                                from: 0,
+                                to: 0,
+                                color: "#FFFFFF",
+                                opacity: 0.9
+                            }],
+                        },
+                        categoryAxis: {
+                            baseUnit: "auto",
+                            justified: false,
+                            type: "date",
+                            majorGridLines: {
+                                visible: false
+                            },
+                            crosshair: {
+                                visible: true
+                            },
+                            labels: {
+                                rotation: "auto",
+                                dateFormats:
+                                {
+                                    minutes: "HH:mm",
+                                    hours: "HH:mm",
+                                    days: "dd/MM",
+                                    months: "MMM 'yy",
+                                    years: "yyyy"
+                                }
+                            }
+                        },
+                        tooltip: {
+                            visible: true,
+                            format: "{0:N0}"
+                        },
+                        transitions: false,
+                        dataBound: function (e) {
+                            var chart = $("#chart5").data("kendoChart");
+
+                            var data = chart.options.series[4].data;
+                            chart.options.valueAxis.plotBands[0].to = data[0].CAP * data[0].CAP1;
+                            chart.options.valueAxis.plotBands[1].from = data[0].CAP * data[0].CAP1;
+                            chart.options.valueAxis.plotBands[1].to = data[0].CAP * data[0].CAP2;
+                            chart.options.valueAxis.plotBands[2].from = data[0].CAP * data[0].CAP2;
+                            chart.options.valueAxis.plotBands[2].to = data[0].CAP * data[0].CAP3;
+                            chart.options.valueAxis.plotBands[3].from = data[0].CAP * data[0].CAP3;
+                            chart.options.valueAxis.plotBands[3].to = data[0].CAP * data[0].CAP_EXCESS;
+                        }
+                    });
+                } catch (err) { };
+
+
+
+            }
+
+
+            function updateSearchFilters(objtype, obj, field, operator, value, resetfilter) {
+                var newFilter = { field: field, operator: operator, value: value };
+                var dataSource = $(obj).data(objtype).dataSource;
+                var filters = null;
+
+                if (resetfilter == 1) {
+                    filters = [newFilter];
+                }
+                else {
+                    filters = dataSource.filter().filters;
+                    filters.push(newFilter);
+                }
+
+                dataSource.filter(filters);
+
+            }
+
+            var iFlush = 0;
+            var CurrentDTM = null;
+            var firstRun = 1;
+            function RefreshComponents() {
+                setInterval(function () {
+                    if (firstRun == 1) {
+                        firstRun = 0;
+                    }
+                    else {
+
+                        $.ajax({
+                            url: './json/ED_Etl_Cntrl.json',
+                            type: 'GET',
+                            dataType: 'json',
+                            cache: false,
+                            success: function (data) {
+                                try {
+                                    if (CurrentDTM != data[0].CURR_DTM && CurrentDTM != null) {
+
+                                        iFlush += 1;
+                                        if (iFlush >= 10) {
+                                            if (msie < 9) {
+                                                self.location.reload();
+                                            }
+                                            //else {
+                                            //    kendo.destroy(document.body);
+                                            //}
+                                            iFlush = 0;
+                                        }
+
+                                        $('#gridDetail').data("kendoGrid").dataSource.read();
+                                        $('#gridExpArrivals').data("kendoGrid").dataSource.read();
+                                        $('#gridDepartures').data("kendoGrid").dataSource.read();
+                                        $('#gridTriage').data("kendoGrid").dataSource.read();
+                                        $('#gridWaitingTimes').data("kendoGrid").dataSource.read();
+                                        $('#chart1').data("kendoChart").dataSource.read();
+                                        $('#chart2').data("kendoChart").dataSource.read();
+                                        $('#chart3').data("kendoChart").dataSource.read();
+                                        $('#chart4').data("kendoChart").dataSource.read();
+                                        $('#chart5').data("kendoChart").dataSource.read();
+                                        getDateData();
+                                        GetDashboardAlert("ED");
+                                    }
+                                    CurrentDTM = data[0].CURR_DTM;
+                                } catch (err) { };
+
+                            }
+                        });
+
+
+                    }
+
+                }, 60000);
+
+            }
+
+
+            $(document).ready(createStatusGrid());
+            //$(document).bind("kendo:skinChange", createStatusGrid("METRO"));
+            $(document).ready(RefreshComponents());
+
+        </script>
+    </div>
+
+</body>
+</html>
