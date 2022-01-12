@@ -3,8 +3,6 @@ using MvvmHelpers.Commands;
 using SaCodeWhite.Models;
 using SaCodeWhite.Shared.Localisation;
 using SaCodeWhite.Shared.Models;
-using SaCodeWhite.Shared.Models.AmbulanceService;
-using SaCodeWhite.Shared.Models.EmergencyDepartment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,17 +79,12 @@ namespace SaCodeWhite.ViewModels
             try
             {
                 async Task<IList<IStatus>> getDataAsync(CancellationToken ct)
-                {
-                    var result = new List<IStatus>();
-
-                    if (typeof(T) == typeof(AmbulanceServiceDashboard))
-                        result.AddRange(await CodeWhiteService.GetAmbulanceServiceDashboardsAsync(ct));
-
-                    if (typeof(T) == typeof(EmergencyDepartmentDashboard))
-                        result.AddRange(await CodeWhiteService.GetEmergencyDepartmentDashboardsAsync(ct));
-
-                    return result;
-                }
+                    => new List<IStatus>(Type switch
+                       {
+                           DashboardType.AmbulanceService => await CodeWhiteService.GetAmbulanceServiceDashboardsAsync(ct),
+                           DashboardType.EmergencyDepartment => await CodeWhiteService.GetEmergencyDepartmentDashboardsAsync(ct),
+                           _ => Array.Empty<IStatus>()
+                       });
 
                 var dataTask = getDataAsync(ct);
 
