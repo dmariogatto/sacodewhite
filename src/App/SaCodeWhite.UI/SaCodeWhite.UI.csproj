@@ -32,7 +32,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.0" />
-    <PackageReference Include="Plugin.StoreReview" Version="3.1.0" />
+    <PackageReference Include="Plugin.StoreReview" Version="3.2.0-beta" />
     <PackageReference Include="Xamarin.Essentials.Interfaces" Version="1.7.0" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />
   </ItemGroup>
