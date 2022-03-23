@@ -91,7 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Plugin.StoreReview" Version="3.2.0-beta" />
+    <PackageReference Include="Plugin.StoreReview" Version="3.3.1" />
     <PackageReference Include="Xamarin.Firebase.Messaging">
       <Version>122.0.0.3</Version>
     </PackageReference>

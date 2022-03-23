@@ -14,7 +14,7 @@ namespace SaCodeWhite.Droid
 {
 	
 	
-	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "12.1.0.11")]
+	[global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Android.Build.Tasks", "12.2.0.155")]
 	public partial class Resource
 	{
 		
@@ -153,6 +153,7 @@ namespace SaCodeWhite.Droid
 			global::Plugin.StoreReview.Resource.Id.text2 = global::SaCodeWhite.Droid.Resource.Id.text2;
 			global::Plugin.StoreReview.Resource.Id.time = global::SaCodeWhite.Droid.Resource.Id.time;
 			global::Plugin.StoreReview.Resource.Id.title = global::SaCodeWhite.Droid.Resource.Id.title;
+			global::Plugin.StoreReview.Resource.Id.view_tree_lifecycle_owner = global::SaCodeWhite.Droid.Resource.Id.view_tree_lifecycle_owner;
 			global::Plugin.StoreReview.Resource.Integer.status_bar_notification_info_maxnum = global::SaCodeWhite.Droid.Resource.Integer.status_bar_notification_info_maxnum;
 			global::Plugin.StoreReview.Resource.Layout.browser_actions_context_menu_page = global::SaCodeWhite.Droid.Resource.Layout.browser_actions_context_menu_page;
 			global::Plugin.StoreReview.Resource.Layout.browser_actions_context_menu_row = global::SaCodeWhite.Droid.Resource.Layout.browser_actions_context_menu_row;
