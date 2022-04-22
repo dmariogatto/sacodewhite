@@ -1,13 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-    <TargetFrameworkVersion>v11.0</TargetFrameworkVersion>
-  </PropertyGroup>
-  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B02592AB-30DD-4AA4-9538-BB8EB7C0B710}</ProjectGuid>
+    <ProjectGuid>{C5857AA5-64B0-49C1-8236-24080893DF33}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{6968b3a4-1835-46a3-ac5c-1ae33b475983}</TemplateGuid>
     <OutputType>Library</OutputType>
@@ -19,7 +15,7 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <TargetFrameworkVersion>v11.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v12.0</TargetFrameworkVersion>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidHttpClientHandlerType>Xamarin.Android.Net.AndroidClientHandler</AndroidHttpClientHandlerType>
     <NuGetPackageImportStamp>
@@ -35,6 +31,7 @@
     </AndroidSigningStorePass>
     <AndroidSigningKeyPass>
     </AndroidSigningKeyPass>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -93,13 +90,13 @@
   <ItemGroup>
     <PackageReference Include="Plugin.StoreReview" Version="3.3.1" />
     <PackageReference Include="Xamarin.Firebase.Messaging">
-      <Version>122.0.0.3</Version>
+      <Version>122.0.0.5</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2401" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.2" />
-    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.4.1.1" />
     <PackageReference Include="Xamarin.GooglePlayServices.Base">
-      <Version>117.6.0.3</Version>
+      <Version>117.6.0.5</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
@@ -108,7 +105,6 @@
     <Compile Include="Services\MessagingService.cs" />
     <Compile Include="Services\DeviceInstallationService _Droid.cs" />
     <Compile Include="Renderers\ButtonCustomRenderer.cs" />
-    <Compile Include="Renderers\TintImageRenderer.cs" />
     <Compile Include="Services\RetryPolicyService_Droid.cs" />
     <Compile Include="Services\RendererService_Droid.cs" />
     <Compile Include="Services\EnvironmentService_Droid.cs" />

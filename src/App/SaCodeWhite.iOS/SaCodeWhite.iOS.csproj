@@ -8,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9FBFEF16-059F-4CBF-8A59-1F6F5718F217}</ProjectGuid>
+    <ProjectGuid>{7B78F9F1-F172-402B-9AD0-CD0CC4F84D40}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TemplateGuid>{89a4fe7c-635d-49c9-8d8c-5cd363c0d68d}</TemplateGuid>
     <OutputType>Exe</OutputType>
@@ -99,7 +99,6 @@
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Renderers\CustomNavigationPageRenderer.cs" />
     <Compile Include="Renderers\CustomPageRenderer.cs" />
-    <Compile Include="Renderers\TintImageRenderer.cs" />
     <Compile Include="Services\DeviceInstallationService_iOS.cs" />
     <Compile Include="Services\RetryPolicyService_iOS.cs" />
     <Compile Include="Services\RendererService_iOS.cs" />
@@ -237,7 +236,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadMonoInterpreterErrorInfoBarSaCodeWhiteiOSHideInfoBar="True" />
+      <UserProperties XamarinHotReloadMonoInterpreterErrorInfoBarSaCodeWhiteiOSHideInfoBar="True" TriggeredFromHotReload="False" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
