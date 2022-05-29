@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure.Cosmos.Table;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
@@ -10,7 +9,6 @@ using SaCodeWhite.Functions.Models;
 using SaCodeWhite.Functions.Repositories;
 using SaCodeWhite.Functions.Services;
 using System;
-using CloudTableStorageAccount = Microsoft.Azure.Cosmos.Table.CloudStorageAccount;
 
 [assembly: FunctionsStartup(typeof(SaCodeWhite.Functions.Startup))]
 
@@ -34,24 +32,23 @@ namespace SaCodeWhite.Functions
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(SaHealthBaseUrl))
                 .AddTransientHttpErrorPolicy(b => b.WaitAndRetryAsync(3, n => TimeSpan.FromSeconds(Math.Pow(2, n))));
 
-            string getConnectionString(IServiceProvider serviceProvider)
-            {
-                var config = serviceProvider.GetService<IConfiguration>();
-                var storageConnString =
-                    config["Values:AzureWebJobsStorage"] ??
-                    config.GetConnectionString("StorageConnectionString") ??
-                    Environment.GetEnvironmentVariable("AzureWebJobsStorage") ??
-                    "UseDevelopmentStorage=true;";
-                return storageConnString;
-            }
+            builder.Services.AddSingleton(services =>
+                new TableStorageOptions()
+                {
+                    AzureWebJobsStorage = services.GetService<IConfiguration>().GetValue<string>("AzureWebJobsStorage")
+                });
 
-            builder.Services.AddSingleton(serviceProvider =>
-                CloudTableStorageAccount.Parse(getConnectionString(serviceProvider)).CreateCloudTableClient());
+            builder.Services.AddSingleton(services =>
+                new BlobStorageOptions()
+                {
+                    AzureWebJobsStorage = services.GetService<IConfiguration>().GetValue<string>("AzureWebJobsStorage"),
+                    BlobContainerName = services.GetService<IConfiguration>().GetValue<string>("BlobContainerName")
+                });
 
             builder.Services.AddOptions<NotificationHubOptions>()
                 .Configure(configuration.GetSection("NotificationHub").Bind);
 
-            builder.Services.AddSingleton<IBlobService>(sp => new BlobService(getConnectionString(sp)));
+            builder.Services.AddSingleton<IBlobService, BlobService>();
             builder.Services.AddSingleton<INotificationHubService, NotificationHubService>();
 
             builder.Services.AddSingleton<ILogService, LogService>();

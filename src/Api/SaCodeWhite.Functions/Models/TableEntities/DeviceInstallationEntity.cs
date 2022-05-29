@@ -1,10 +1,9 @@
-﻿using Microsoft.Azure.Cosmos.Table;
-using SaCodeWhite.Shared.Models;
+﻿using SaCodeWhite.Shared.Models;
 using System;
 
 namespace SaCodeWhite.Functions.Models
 {
-    public class DeviceInstallationEntity : TableEntity
+    public class DeviceInstallationEntity : BaseTableStoreEntity
     {
         public DeviceInstallationEntity() { }
 

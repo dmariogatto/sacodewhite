@@ -1,148 +1,143 @@
-﻿using Microsoft.Azure.Cosmos.Table;
+﻿using Azure;
+using Azure.Data.Tables;
+using Microsoft.Extensions.Logging;
+using SaCodeWhite.Functions.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SaCodeWhite.Functions.Repositories
 {
-    public class TableRepository<T> : ITableRepository<T> where T : TableEntity, new()
+    public class TableRepository<T> : ITableRepository<T> where T : class, ITableEntity, new()
     {
-        private readonly CloudTable _cloudTable;
+        private const int MaxBatchCount = 100;
 
-        public TableRepository(CloudTableClient tableClient)
+        private readonly TableClient _tableClient;
+
+        public TableRepository(TableStorageOptions options)
         {
-            if (tableClient == null)
-                throw new ArgumentNullException(nameof(tableClient));
+            if (string.IsNullOrEmpty(options?.AzureWebJobsStorage))
+                throw new ArgumentException(nameof(TableStorageOptions.AzureWebJobsStorage));
 
-            var tableName = typeof(T).Name;
-
-            _cloudTable = tableClient.GetTableReference(tableName)
-                ?? throw new NullReferenceException($"Reference to table '{tableName}' cannot be null!");
+            _tableClient = new TableClient(options.AzureWebJobsStorage, typeof(T).Name);
         }
 
         public Task CreateIfNotExistsAsync(CancellationToken cancellationToken)
         {
-            return _cloudTable.CreateIfNotExistsAsync(cancellationToken);
+            return _tableClient.CreateIfNotExistsAsync(cancellationToken);
         }
 
         public Task<IList<T>> GetPartitionAsync(string partitionKey, CancellationToken cancellationToken)
         {
-            var query = new TableQuery<T>();
-            query = query.Where(
-                    TableQuery.GenerateFilterCondition(
-                        nameof(TableEntity.PartitionKey),
-                        QueryComparisons.Equal,
-                        partitionKey));
+            var query = _tableClient.QueryAsync<T>(i => i.PartitionKey == partitionKey);
             return ExecuteQueryAsync(query, cancellationToken);
         }
 
-        public Task<IList<T>> GetPartitionsAsync(IEnumerable<string> partitionKeys, CancellationToken cancellationToken)
+        public Task<IList<T>> GetPartitionsAsync(IList<string> partitionKeys, CancellationToken cancellationToken)
         {
-            var query = new TableQuery<T>();
+            if (!partitionKeys.Any())
+                return Task.FromResult<IList<T>>(Array.Empty<T>());
 
-            var combined = string.Empty;
-            foreach (var pk in partitionKeys)
+            var sb = new StringBuilder();
+            for (var i = 0; i < partitionKeys.Count; i++)
             {
-                var predicate = TableQuery.GenerateFilterCondition(
-                        nameof(TableEntity.PartitionKey),
-                        QueryComparisons.Equal,
-                        pk);
-                combined = !string.IsNullOrEmpty(combined)
-                    ? TableQuery.CombineFilters(
-                        combined,
-                        TableOperators.Or,
-                        predicate)
-                    : predicate;
+                var pk = partitionKeys[i];
+
+                sb.AppendFormat("(PartitionKey eq '{0}')", pk);
+
+                if (i < partitionKeys.Count - 1)
+                    sb.AppendFormat(" or ");
             }
 
-            query = query.Where(combined);
+            var query = _tableClient.QueryAsync<T>(filter: sb.ToString());
             return ExecuteQueryAsync(query, cancellationToken);
         }
 
         public async Task<T> GetEntityAsync(string partitionKey, string rowKey, CancellationToken cancellationToken)
         {
-            var retrieveOp = TableOperation.Retrieve<T>(partitionKey, rowKey);
-            var result = await _cloudTable.ExecuteAsync(retrieveOp, cancellationToken)
-                .ConfigureAwait(false);
-            return result.Result as T;
+            var resp = await _tableClient.GetEntityAsync<T>(partitionKey, rowKey).ConfigureAwait(false);
+            return resp.Value;
+        }
+
+        public Task<IList<T>> GetEntitiesAsync(IList<(string partitionKey, string rowKey)> keys, CancellationToken cancellationToken)
+        {
+            if (!keys.Any())
+                return Task.FromResult<IList<T>>(Array.Empty<T>());
+
+            var sb = new StringBuilder();
+            for (var i = 0; i < keys.Count; i++)
+            {
+                var k = keys[i];
+
+                sb.Append("(");
+                sb.AppendFormat("(PartitionKey eq '{0}')", k.partitionKey);
+                sb.Append(" and ");
+                sb.AppendFormat("(RowKey eq '{0}')", k.rowKey);
+                sb.Append(")");
+
+                if (i < keys.Count - 1)
+                    sb.AppendFormat(" or ");
+            }
+
+            var query = _tableClient.QueryAsync<T>(filter: sb.ToString());
+            return ExecuteQueryAsync(query, cancellationToken);
         }
 
         public Task<IList<T>> GetAllEntitiesAsync(CancellationToken cancellationToken)
         {
-            var query = new TableQuery<T>();
+            var query = _tableClient.QueryAsync<T>();
             return ExecuteQueryAsync(query, cancellationToken);
         }
 
         public Task DeleteAsync(T entity, CancellationToken cancellationToken)
         {
-            var deleteOp = TableOperation.Delete(entity);
-            return _cloudTable.ExecuteAsync(deleteOp, cancellationToken);
+            return _tableClient.DeleteEntityAsync(entity.PartitionKey, entity.RowKey, cancellationToken: cancellationToken);
         }
 
         public Task InsertOrReplaceAsync(T entity, CancellationToken cancellationToken)
         {
-            var insertOrReplaceOp = TableOperation.InsertOrReplace(entity);
-            return _cloudTable.ExecuteAsync(insertOrReplaceOp, cancellationToken);
+            return _tableClient.UpsertEntityAsync(entity, cancellationToken: cancellationToken);
         }
 
-        public Task DeleteBulkAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
-            => BatchOpsAsync(entities, (bo, e) => bo.Delete(e), cancellationToken);
+        public Task DeleteBulkAsync(IEnumerable<T> entities, ILogger logger, CancellationToken cancellationToken)
+            => BatchActionAsync(entities, TableTransactionActionType.Delete, logger, cancellationToken);
 
-        public Task InsertOrReplaceBulkAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
-            => BatchOpsAsync(entities, (bo, e) => bo.InsertOrReplace(e), cancellationToken);
+        public Task InsertOrReplaceBulkAsync(IEnumerable<T> entities, ILogger logger, CancellationToken cancellationToken)
+            => BatchActionAsync(entities, TableTransactionActionType.UpsertReplace, logger, cancellationToken);
 
-        public async Task<IList<T>> ExecuteQueryAsync(TableQuery<T> query, CancellationToken cancellationToken)
+        public async Task<IList<T>> ExecuteQueryAsync(AsyncPageable<T> asyncQuery, CancellationToken cancellationToken)
         {
             var results = new List<T>();
-            // Initialize continuation token to start from the beginning of the table.
-            var continuationToken = default(TableContinuationToken);
 
-            do
+            await foreach (var page in asyncQuery.AsPages().ConfigureAwait(false))
             {
-                // Retrieve a segment (1000 entities)
-                var tableQueryResult = await _cloudTable.ExecuteQuerySegmentedAsync(query, continuationToken)
-                    .ConfigureAwait(false);
-                // Assign the new continuation token to tell the service where to
-                // continue on the next iteration (or null if it has reached the end)
-                continuationToken = tableQueryResult.ContinuationToken;
-                results.AddRange(tableQueryResult.Results);
-            } while (continuationToken != null && (cancellationToken == default || !cancellationToken.IsCancellationRequested));
+                cancellationToken.ThrowIfCancellationRequested();
+                results.AddRange(page.Values);
+            }
 
             return results;
         }
 
-        private async Task BatchOpsAsync(IEnumerable<T> entities, Action<TableBatchOperation, T> batchOpAction, CancellationToken cancellationToken)
+        private async Task BatchActionAsync(IEnumerable<T> entities, TableTransactionActionType actionType, ILogger logger, CancellationToken cancellationToken)
         {
-            var batchOps = new List<TableBatchOperation>();
+            logger.LogInformation($"Creating batch actions for '{_tableClient.Name}'");
 
-            foreach (var g in entities.GroupBy(a => a.PartitionKey))
+            var batchActions = entities
+                .GroupBy(a => a.PartitionKey)
+                .ToDictionary(g => g.Key, g => g.Select(i => new TableTransactionAction(actionType, i)).ToList());
+
+            var batchCount = 1;
+            foreach (var ba in batchActions)
             {
-                var batchOp = new TableBatchOperation();
-                foreach (var e in g)
+                logger.LogInformation($"Batch {batchCount++} of {batchActions.Count} for '{_tableClient.Name}'");
+                for (var i = 0; i < ba.Value.Count; i += MaxBatchCount)
                 {
-                    batchOpAction.Invoke(batchOp, e);
-
-                    // Maximum operations in a batch
-                    if (batchOp.Count == 100)
-                    {
-                        batchOps.Add(batchOp);
-                        batchOp = new TableBatchOperation();
-                    }
+                    var batch = ba.Value.Skip(i).Take(MaxBatchCount);
+                    var result = await _tableClient.SubmitTransactionAsync(batch, cancellationToken).ConfigureAwait(false);
                 }
-
-                // Batch can only contain operations in the same partition
-                if (batchOp.Count > 0)
-                {
-                    batchOps.Add(batchOp);
-                }
-            }
-
-            foreach (var bo in batchOps)
-            {
-                var result = await _cloudTable.ExecuteBatchAsync(bo, cancellationToken)
-                    .ConfigureAwait(false);
             }
         }
     }

@@ -3,6 +3,7 @@ using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
 using Newtonsoft.Json;
 using SaCodeWhite.Functions.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,13 +14,18 @@ namespace SaCodeWhite.Functions.Services
 {
     public class BlobService : IBlobService
     {
-        private const string ContainerName = "sacodewhite";
-
         private readonly BlobServiceClient _blobServiceClient;
+        private readonly string _blobContainerName;
 
-        public BlobService(string connectionString)
+        public BlobService(BlobStorageOptions options)
         {
-            _blobServiceClient = new BlobServiceClient(connectionString);
+            if (string.IsNullOrEmpty(options?.AzureWebJobsStorage))
+                throw new ArgumentException(nameof(BlobStorageOptions.AzureWebJobsStorage));
+            if (string.IsNullOrEmpty(options?.BlobContainerName))
+                throw new ArgumentException(nameof(BlobStorageOptions.AzureWebJobsStorage));
+
+            _blobServiceClient = new BlobServiceClient(options.AzureWebJobsStorage);
+            _blobContainerName = options.BlobContainerName;
         }
 
         public async Task<IList<BlobFile>> GetBlobFilesAsync(CancellationToken cancellationToken)
@@ -32,16 +38,15 @@ namespace SaCodeWhite.Functions.Services
             var resultSegment = container.GetBlobsAsync().AsPages();
 
             // Enumerate the blobs returned for each page.
-            await foreach (Azure.Page<BlobItem> blobPage in resultSegment)
+            await foreach (var blobPage in resultSegment)
             {
-                foreach (var blob in blobPage.Values.Where(i => !i.Deleted && i.Properties.LastModified.HasValue))
-                {
-                    result.Add(new BlobFile()
+                result.AddRange(blobPage.Values
+                    .Where(i => !i.Deleted && i.Properties.LastModified.HasValue)
+                    .Select(i => new BlobFile()
                     {
-                        Name = blob.Name,
-                        ModifiedUtc = blob.Properties.LastModified.Value.UtcDateTime
-                    });
-                }
+                        Name = i.Name,
+                        ModifiedUtc = i.Properties.LastModified.Value.UtcDateTime
+                    }));
             }
 
             return result;
@@ -135,7 +140,7 @@ namespace SaCodeWhite.Functions.Services
 
         private async Task<BlobContainerClient> GetBlobContainerAsync(CancellationToken cancellationToken = default)
         {
-            var containerClient = _blobServiceClient.GetBlobContainerClient(ContainerName);
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_blobContainerName);
             await containerClient.CreateIfNotExistsAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
             return containerClient;
         }
