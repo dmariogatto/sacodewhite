@@ -97,8 +97,8 @@
             <x:Double x:Key="XLargeSpacing">20</x:Double>
 
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
-            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
-            <converters:NullToInverseBoolConverter x:Key="NullToInverseBoolConverter" />
+            <converters:IsNotNullToBoolConverter x:Key="IsNotNullToBoolConverter" />
+            <converters:IsNullToBoolConverter x:Key="IsNullToBoolConverter" />
             <converters:StringToBoolConverter x:Key="StringToBoolConverter" />
             <converters:EqualityConverter x:Key="EqualityConverter" />
 
