@@ -43,9 +43,9 @@ namespace SaCodeWhite.ViewModels
         }
 
         #region Overrides
-        public override void OnAppearing()
+        public override void OnCreate()
         {
-            base.OnAppearing();
+            base.OnCreate();
 
             TrackEvent(Type switch
             {
@@ -80,11 +80,11 @@ namespace SaCodeWhite.ViewModels
             {
                 async Task<IList<IStatus>> getDataAsync(CancellationToken ct)
                     => new List<IStatus>(Type switch
-                       {
-                           DashboardType.AmbulanceService => await CodeWhiteService.GetAmbulanceServiceDashboardsAsync(ct),
-                           DashboardType.EmergencyDepartment => await CodeWhiteService.GetEmergencyDepartmentDashboardsAsync(ct),
-                           _ => Array.Empty<IStatus>()
-                       });
+                    {
+                        DashboardType.AmbulanceService => await CodeWhiteService.GetAmbulanceServiceDashboardsAsync(ct),
+                        DashboardType.EmergencyDepartment => await CodeWhiteService.GetEmergencyDepartmentDashboardsAsync(ct),
+                        _ => Array.Empty<IStatus>()
+                    });
 
                 var dataTask = getDataAsync(ct);
 

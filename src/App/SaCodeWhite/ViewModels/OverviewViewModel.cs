@@ -15,7 +15,7 @@ namespace SaCodeWhite.ViewModels
     public class OverviewViewModel : BaseAlertStatusCategoriesViewModel
     {
         public OverviewViewModel(
-            IBvmConstructor bvmConstructor) : base( bvmConstructor)
+            IBvmConstructor bvmConstructor) : base(bvmConstructor)
         {
             Title = Shared.Localisation.Resources.Pulse;
 
@@ -25,9 +25,9 @@ namespace SaCodeWhite.ViewModels
         }
 
         #region Overrides
-        public override void OnAppearing()
+        public override void OnCreate()
         {
-            base.OnAppearing();
+            base.OnCreate();
 
             TrackEvent(AppCenterEvents.PageView.OverviewView);
         }
