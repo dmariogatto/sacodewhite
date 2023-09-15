@@ -6,8 +6,5 @@
   "ApiKeyAmbulanceDashboards": "{ApiKeyAmbulanceDashboards}",
   "ApiKeyEmergencyDepartmentDashboards": "{ApiKeyEmergencyDepartmentDashboards}",
   "ApiKeyRegisterDevice": "{ApiKeyRegisterDevice}",
-  "ApiKeyDeleteDevice": "{ApiKeyDeleteDevice}",
-
-  "AppCenterAndroidSecret": "{AppCenterAndroidSecret}",
-  "AppCenterIosSecret": "{AppCenterIosSecret}"
+  "ApiKeyDeleteDevice": "{ApiKeyDeleteDevice}"
 }

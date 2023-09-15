@@ -1,6 +1,4 @@
-﻿using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,7 +38,7 @@ namespace SaCodeWhite.Services
                 System.Diagnostics.Debug.WriteLine($"Tracking Event: {eventName}");
                 if (_deviceInfo.DeviceType != DeviceType.Virtual)
                 {
-                    Analytics.TrackEvent(eventName, properties);
+                    // TODO: Some event tracking
                 }
             }
         }
@@ -73,11 +71,9 @@ namespace SaCodeWhite.Services
             {
                 try
                 {
-                    using (var stream = File.OpenRead(_logFilePath))
-                    using (var reader = new StreamReader(stream))
-                    {
-                        result = await reader.ReadToEndAsync().ConfigureAwait(false);
-                    }
+                    using var stream = File.OpenRead(_logFilePath);
+                    using var reader = new StreamReader(stream);
+                    result = await reader.ReadToEndAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -113,7 +109,7 @@ namespace SaCodeWhite.Services
                 ex.GetType() != typeof(OperationCanceledException) &&
                 _deviceInfo.DeviceType != DeviceType.Virtual)
             {
-                Crashes.TrackError(ex, data);
+                // TODO: Some crash logging
             }
 
 #if !DEBUG

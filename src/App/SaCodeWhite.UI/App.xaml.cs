@@ -1,7 +1,4 @@
-﻿using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using Plugin.StoreReview;
+﻿using Plugin.StoreReview;
 using SaCodeWhite.Services;
 using SaCodeWhite.Shared.Models;
 using SaCodeWhite.UI.Services;
@@ -45,10 +42,6 @@ namespace SaCodeWhite.UI
             Device.SetFlags(new string[] { });
 
             InitializeComponent();
-
-            var appCenterId = Constants.AppCenterSecret;
-            if (!string.IsNullOrEmpty(appCenterId) && Guid.TryParse(appCenterId, out var guid) && guid != Guid.Empty)
-                AppCenter.Start(appCenterId, typeof(Analytics), typeof(Crashes));
 
             VersionTracking.Track();
             UpdateDayCount();

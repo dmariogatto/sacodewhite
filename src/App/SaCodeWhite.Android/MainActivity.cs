@@ -21,7 +21,8 @@ namespace SaCodeWhite.Droid
         MainLauncher = true,
         LaunchMode = LaunchMode.SingleTask,
         ScreenOrientation = ScreenOrientation.Portrait,
-        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
+        Exported = true)]
     [IntentFilter(
         new[] { Xamarin.Essentials.Platform.Intent.ActionAppAction },
         Categories = new[] { Intent.CategoryDefault })]

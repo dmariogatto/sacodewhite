@@ -6,7 +6,6 @@ using SaCodeWhite.Shared.Models;
 using SaCodeWhite.Shared.Models.AmbulanceService;
 using SaCodeWhite.Shared.Models.EmergencyDepartment;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

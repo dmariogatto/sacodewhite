@@ -7,6 +7,7 @@ using SaCodeWhite.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using TinyIoC;
 using Xamarin.Essentials.Interfaces;
 
@@ -25,7 +26,15 @@ namespace SaCodeWhite
                 NullValueHandling = NullValueHandling.Ignore
             }));
 
-            Container.Register((c, e) => RestService.For<ISaCodeWhiteApi>(Constants.ApiUrlBase, refitSettings)).AsSingleton();
+            Container.Register((c, e) =>
+            {
+                var client = new HttpClient()
+                {
+                    BaseAddress = new Uri(Constants.ApiUrlBase)
+                };
+
+                return RestService.For<ISaCodeWhiteApi>(client, refitSettings);
+            }).AsSingleton();
 
             Container.Register((c, e) => CrossStoreReview.Current).AsSingleton();
 

@@ -30,8 +30,6 @@ namespace SaCodeWhite
             ApiKeyEmergencyDepartmentDashboards = j.Value<string>(nameof(ApiKeyEmergencyDepartmentDashboards));
             ApiKeyRegisterDevice = j.Value<string>(nameof(ApiKeyRegisterDevice));
             ApiKeyDeleteDevice = j.Value<string>(nameof(ApiKeyDeleteDevice));
-            AppCenterAndroidSecret = j.Value<string>(nameof(AppCenterAndroidSecret));
-            AppCenterIosSecret = j.Value<string>(nameof(AppCenterIosSecret));
         }
 
         public const string Email = "outtaapps@gmail.com";
@@ -56,12 +54,7 @@ namespace SaCodeWhite
         public static readonly string ApiKeyRegisterDevice;
         public static readonly string ApiKeyDeleteDevice;
 
-        public static readonly string AppCenterAndroidSecret;
-        public static readonly string AppCenterIosSecret;
-
         public static string AppId => ValueForPlatform(AndroidId, AppleId);
-
-        public static string AppCenterSecret => ValueForPlatform(AppCenterAndroidSecret, AppCenterIosSecret);
 
         private static Lazy<DevicePlatform> Platform => new Lazy<DevicePlatform>(() => IoC.Resolve<IDeviceInfo>().Platform);
         private static string ValueForPlatform(string android, string ios)

@@ -12,12 +12,9 @@ namespace SaCodeWhite.Shared
 
             var attributes = fi.GetCustomAttributes(
                 typeof(DescriptionAttribute),
-                false).OfType<DescriptionAttribute>()
-                      .ToList();
+                false).OfType<DescriptionAttribute>();
 
-            return attributes.Any()
-                    ? attributes.First().Description
-                    : enumValue.ToString();
+            return attributes.FirstOrDefault()?.Description ?? enumValue.ToString();
         }
     }
 }
