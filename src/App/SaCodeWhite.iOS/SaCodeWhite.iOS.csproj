@@ -101,7 +101,6 @@
     <Compile Include="Renderers\CustomPageRenderer.cs" />
     <Compile Include="Services\DeviceInstallationService_iOS.cs" />
     <Compile Include="Services\RetryPolicyService_iOS.cs" />
-    <Compile Include="Services\RendererService_iOS.cs" />
     <Compile Include="Services\EnvironmentService_iOS.cs" />
     <Compile Include="Services\LocaliseService_iOS.cs" />
     <None Include="appcenter-update-bundle-version.sh" />
@@ -236,7 +235,7 @@
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties XamarinHotReloadMonoInterpreterErrorInfoBarSaCodeWhiteiOSHideInfoBar="True" TriggeredFromHotReload="False" />
+      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadMonoInterpreterErrorInfoBarSaCodeWhiteiOSHideInfoBar="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

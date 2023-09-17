@@ -30,7 +30,6 @@ namespace SaCodeWhite.iOS
             IoC.RegisterSingleton<ILocalise, LocaliseService_iOS>();
             IoC.RegisterSingleton<IDeviceInstallationService, DeviceInstallationService_iOS>();
             IoC.RegisterSingleton<IEnvironmentService, EnvironmentService_iOS>();
-            IoC.RegisterSingleton<IRendererService, RendererService_iOS>();
             IoC.RegisterSingleton<IRetryPolicyService, RetryPolicyService_iOS>();
 
             global::Xamarin.Forms.Forms.Init();

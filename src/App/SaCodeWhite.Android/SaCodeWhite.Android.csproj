@@ -109,7 +109,6 @@
     <Compile Include="Services\DeviceInstallationService _Droid.cs" />
     <Compile Include="Renderers\ButtonCustomRenderer.cs" />
     <Compile Include="Services\RetryPolicyService_Droid.cs" />
-    <Compile Include="Services\RendererService_Droid.cs" />
     <Compile Include="Services\EnvironmentService_Droid.cs" />
     <Compile Include="Services\LocaliseService_Droid.cs" />
     <Compile Include="MainApplication.cs" />

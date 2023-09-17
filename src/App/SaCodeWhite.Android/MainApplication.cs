@@ -26,7 +26,6 @@ namespace SaCodeWhite.Droid
             IoC.RegisterSingleton<IDeviceInstallationService, DeviceInstallationService_Droid>();
             IoC.RegisterSingleton<ILocalise, LocaliseService_Droid>();
             IoC.RegisterSingleton<IEnvironmentService, EnvironmentService_Droid>();
-            IoC.RegisterSingleton<IRendererService, RendererService_Droid>();
             IoC.RegisterSingleton<IRetryPolicyService, RetryPolicyService_Droid>();
         }
     }
